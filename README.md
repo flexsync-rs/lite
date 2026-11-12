@@ -30,11 +30,11 @@ we have `x.0.0-lite.y.z+for-lib-dev` pre-release "physical" versions.
 
 ### Scope: only crates.io
 
-All this applies _only_ to library crates published on crates.io, or compatible
-registries. This does NOT work when referring to local dependencies by path, or
-to dependencies in GIT.
+All this applies _only_ to library crates published on crates.io (or compatible
+registries). This does _not_ work when referring to local dependencies by path,
+or to dependencies in GIT.
 
-### Scope: only versioning - no specific cargo features
+### Scope: only versioning - no special cargo features
 
 `lite` concentrates on alternative versioning where a library skips some
 dependencies. It, on its own, does _not_ define, and does not need/use, any
@@ -56,7 +56,7 @@ overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.htm
 
 With `lite` versioning, your consumers, if library crates themselves, can choose
 a `lite` version, even if any (direct or indirect) dependencies ask for `lib`
-version (which is a full version).
+version (which _is_ a full version).
 
 Some crates may have different dependencies in their `lite` version, depending
 on any features being enabled. That applies to
@@ -75,7 +75,8 @@ suffix](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencie
 in the versions identifiers, and one stream uses ordinary (non-pre-release)
 version identifiers:
 
-Consumer crate | use pre-release | use release |
+| Consumer crate | use pre-release | use release |
+| -------------- | --------------- | ----------- |
 
 1. Pre-releases for consumers that are:
    - (static) libraries, or
@@ -88,18 +89,28 @@ Each `x.y.z` "logical" version has three "physical" versions:
 - `x.0.0-lite.y.z+for-lib-dev`
 - `x.y.z+for-bin`
 
-For example, "logical" versions 1.1.4, 1.1.5 and 1.1.6 will have three
-"physical" versions each:
+For example, "logical" versions `1.1.4`, `1.1.5` and `1.1.6` (out of potentially
+more "logical" versions) will have three "physical" versions each:
 
-- `1.0.0-lib.1.4+for-lib`
-- `1.0.0-lib.1.5+for-lib`
-- `1.0.0-lib.1.6+for-lib`
-- `1.0.0-lite.1.4+for-lib-dev`
-- `1.0.0-lite.1.5+for-lib-dev`
-- `1.0.0-lite.1.6+for-lib-dev`
+// @TODO elsewherE: remove +for-lib, +for-lib-dev
+
+- `1.0.0-lib.1.4`
+- `1.0.0-lib.1.5`
+- `1.0.0-lib.1.6`
+- `          ...`
+- `1.0.0-lite.1.4`
+- `1.0.0-lite.1.5`
+- `1.0.0-lite.1.6`
+- `           ...`
 - `1.1.4+for-bin`
 - `1.1.5+for-bin`
 - `1.1.6+for-bin`
+- `          ...`
+
+@TODO
+
++for-bin ===> extra cargo feature, and compile_error! if the user doesn't enable
+it.
 
 `x.0.0-lib.y.z+for-lib` and `x.y.z+for-bin` versions are identical, except that:
 
@@ -109,12 +120,14 @@ For example, "logical" versions 1.1.4, 1.1.5 and 1.1.6 will have three
   `x.y.z+for-bin`. (More below.)
 
 `x.0.0-lite.y.z+for-lib-dev` is a lightweight version. It minimizes use of heavy
-proc macros. It is _not_ used by default, only if you request it as an exact
+dependencies. It is _not_ used by default, only if you request it as an exact
 version (see below). It's for (limited) development of libraries only.
 
-`x.y.z+for-bin` is published _before_ `x.0.0-lite.y.z+for-lib-dev`. That way any
-dependemts that specify/request `flexsync` with `version =
-"x.0.0-lite.y.z+for-lib-dev"` will continue to build with _full_ functionality.
+`x.y.z+for-bin` is published _before_ `x.0.0-lite.y.z`. That way, if there is
+explicit request for `x.0.0-lib.y.z`, any dependemts that specify/request the
+library with `version = "x.0.0-lib.y.z"` will _skip_ `x.0.0-lite.y.z` and will
+resolve to `x.y.z+for-bin`, so they continue to build with _full_ functionality.
+Fail-safe.
 
 Only when you specify/request an exact version of `flexsync` with exact version
 match, like `version = "=x.0.0-lite.y.z+for-lib-dev"`, you will not get the
@@ -147,16 +160,31 @@ However, this limitation applies only if the consumers also want to support the
 "lite" mode/version. Otherwise they can just use the non-pre-release version
 (one with `+bin` metadata suffix).
 
-If a dependent library needs to specify an exact _minor_ version of a library
+If a dependent library needs to specify an _exact minor_ version of a library
 dependency that is `lite`-versioned, create another crate and use
 <https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#tilde-requirements>
 on that other crate.
 
+As per
+[rust-lang/cargo#2222](https://github.com/rust-lang/cargo/issues/2222#issuecomment-1331241110),
+(having multiple pre-release channels) "is a non-starter. If `clap v3` had to
+have a separate channel for each pre-release breaking change, we would have run
+out of well-recognized channel names."
+
 ## Preventing lite versions from matching the +bin versions
 
 `x.0.0-lite.y.z+for-lib-dev` will _not_ match/update to any `x.y.z+for-bin`,
-because they both depend on different fixed minor versions (but both within the
-same major version) of `flexsync-versions`.
+because they both depend on fixed _different minor_ versions (but both within
+the same major version) of `lite` (using `version="=...").
+
+Versions of `lite` crate itself:
+
+| `lite` crate itself   | version operator | version match    |
+| --------------------- | ---------------- | ---------------- |
+| `0.1.0+lib`           | caret/default    | `^0.1.0+lib`     |
+|                       |                  | ` 0.1.0+lib`     |
+| `0.1.1+lite`          | exact            | `=0.1.1+lite`    |
+| `0.1.2+for-bin`       | exact            | `=0.1.2+for-bin` |
 
 @TODO
 
@@ -170,9 +198,12 @@ _-lib-lite._ _CAN'T_ auto-update/match to (the next, or any newer) *+for-bin.
 ## See also
 
 - [Cargo Reference > Manifest > The version
-Field](https://doc.rust-lang.org/nightly/cargo/reference/manifest.html#the-version-field)
+  Field](https://doc.rust-lang.org/nightly/cargo/reference/manifest.html#the-version-field)
+  (among other): "The _pre-release_ part may be separated with _periods_ to
+  distinguish separate _components_. Numeric components will use numeric
+  comparison..."
 - [Cargo Reference > Specifying Dependencies >
-Pre-releases](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
+  Pre-releases](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
 - [Cargo Reference > Specifying Dependencies >Version
   metadata](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#version-metadata).
 
