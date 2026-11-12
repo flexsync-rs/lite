@@ -1,0 +1,31 @@
+[package]
+name = "lite"
+version = "0.0.0 TODO"
+
+#edition = "2024"
+edition = "2021"
+
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+
+authors = ["Peter Lyons Kehl<peter.kehl@gmail.com>"]
+description = "Convention for versioning of libraries that have a lightweight subset"
+
+categories = ["no-std", "no-std::no-alloc", "rust-patterns"]
+keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
+
+repository = "https://github.com/flexsync-rs/lite"
+homepage = "https://github.com/flexsync-rs/lite"
+
+[lints.rust]
+unexpected_cfgs = { level = "forbid"}
+unknown_lints = { level = "forbid"}
+
+[dependencies]
+
+# `no-link` is enabled here, and imported in src/lib.rs, only for
+# "lite" versions, that is, pre-releases x.0.0-lite.y.z+for-lib-dev.
+#
+# Even if `no-link` would be listed here as a dependency for other versions,
+# consumers _would_ still link successfully if `no-link` were not imported in
+# any Rust source file.
+no-link = "0.2.2"
