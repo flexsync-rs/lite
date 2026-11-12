@@ -1,7 +1,7 @@
 [package]
 name = "lite"
 #version = "0.0.0 TODO"
-version = "0.0.0+meta1"
+version = "0.1.0+full"
 
 #edition = "2024"
 edition = "2021"

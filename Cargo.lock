@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "lite"
-version = "0.0.0+meta1"
+version = "0.1.0+full"
 dependencies = [
  "no-link",
 ]
