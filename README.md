@@ -24,10 +24,6 @@ To achieve that, follow this to
 - import other `lite`-versioned library crates, and
 - apply `lite` versioning to your library crate.
 
-@TODO
-
-we have `x.0.0-lite.y.z+for-lib-dev` pre-release "physical" versions.
-
 ### Scope: only crates.io
 
 All this applies _only_ to library crates published on crates.io (or compatible
@@ -55,25 +51,23 @@ with `patch` or `paths` ([path
 overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides))...
 
 With `lite` versioning, your consumers, if library crates themselves, can choose
-a `lite` version, even if any (direct or indirect) dependencies ask for `lib`
-version (which _is_ a full version).
+a `lite` version, even if any (direct or indirect) dependencies ask for `full`
+version.
 
-Some crates may have different dependencies in their `lite` version, depending
-on any features being enabled. That applies to
+Some crates may have fewer, or different, dependencies for their `lite` version,
+depending on any features being enabled. That applies to
 [crates.io/crates/flexsync](https://crates.io/crates/flexsync), too. And you may
-want to add such features to add more `lite`-ness. However, such features
-themselves are not specific to `lite` versioning itself.
+want to add such features to support lightweight use cases. However, such
+features themselves are not specific to `lite` versioning itself.
 
-## Versions
+## Version streams; pre-release only
 
 Each "logical" version of `flexsync` has three "physical" versions (or "streams"
 of "physical" versions) on
-[crates.io/crates/flexsync](https://crates.io/crates/flexsync).
-
-Out of those three "streams", two use [pre-release
+[crates.io/crates/flexsync](https://crates.io/crates/flexsync). They all use
+[pre-release
 suffix](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
-in the versions identifiers, and one stream uses ordinary (non-pre-release)
-version identifiers:
+in the versions identifiers.
 
 | Consumer crate | use pre-release | use release |
 | -------------- | --------------- | ----------- |
@@ -111,20 +105,31 @@ full-lite-STOP
 
 - `          ...`
 - `1.0.0-full.2.4`
+  - these _libraries_ themselves can (optionally, but recommended) import
+    `lite="0.1.0+full"` (_not_ exact version, so no `lite="=..."`, but
+    default/caret matching, so it can update to/match the below versions).
 - `1.0.0-full.2.5`
   - in doctests/unit tests/integration tests (of consumer libraries), import as
     a _dev_ dependency either
-    - `library-crate-name="=1.0.0-full.x.y"` (exact version); or
-    - `lite="=1.0.1+lite"` (exact version), so that
-      - it conflicts with `lite="=1.0.2+STOP"` below, and
+    - every `lite-enabled-library="=1.0.0-full.x.y"` (exact version) - but
+      _not_ normally recommended as it pins this dependency; or
+    - `lite="=0.1.1+lite"` (exact version), so that it conflicts with
+      `lite="=0.1.2+STOP"` below. Recommended, as it updates to/matches any
+      newer versions of `lite-enabled-library`. Also, you don't need to
+      repeat that (specifying exact such version) for every `lite`-enabled
+      dependency.
     
-    Both ways prevent matching `1.0.0-STOP.*.*`, and hence the library crate
-    _does_ link.
+    Both ways prevent matching `0.1.2-STOP.*.*`, and hence the library crate and
+    its doctets/unit tests/integration tests _do_ link.
 - `          ...`
 -
 - `1.0.0-lite.0.0`
   - in consumer binaries, use this as a stopper, with the condition
-    being/including: `<1.0.0-lite.0.0`
+    being/including: `<1.0.0-lite.0.0`. Or use as per above
+    - every `lite-enabled-library="=1.0.0-full.x.y"` (exact version) - not
+      recommended; or
+    - `lite="=0.1.1+lite"` (recommended).
+
 - `           ...`
 - `1.0.0-lite.2.4`
 - `1.0.0-lite.2.5`
@@ -145,7 +150,7 @@ full-lite-STOP
 
 - +for-bin ===> extra cargo feature, and compile_error! if the user doesn't
 enable it.
-  - BUT: then automatic update/match from `-lib` to `+for-bin` would fail!
+  - BUT: then automatic update to/match from `-lib` to `+for-bin` would fail!
     - We DO want this automatic update.
       - Do we?!
 - AND: do NOT have that extra cargo feature for `-lib` or `-lite`.
@@ -222,8 +227,8 @@ Versions of `lite` crate itself:
 
 | `lite` crate itself   | version operator | version match    |
 | --------------------- | ---------------- | ---------------- |
-| `0.1.0+lib`           | default/caret    | ` 0.1.0+lib`     |
-|                       |                  | `^0.1.0+lib`     |
+| `0.1.0+full`          | default/caret    | ` 0.1.0+full`    |
+|                       |                  | `^0.1.0+full`    |
 | `0.1.1+lite`          | exact            | `=0.1.1+lite`    |
 | `0.1.2+for-bin`       | exact            | `=0.1.2+for-bin` |
 |                       |                  |                  |
@@ -245,7 +250,7 @@ Versions of `lite` crate itself:
 @TODO
 
 0.0.0-lib-lite <- linked with exact ="= version" <--- _-lib-lite._, so that
-_-lib-lite._ _CAN'T_ auto-update/match to (the next, or any newer) *+for-bin.
+_-lib-lite._ _CAN'T_ auto-update to/match (the next, or any newer) *+for-bin.
 
 @TODO
 
