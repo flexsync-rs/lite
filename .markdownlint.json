@@ -1,5 +1,10 @@
+/* For Markdownlint. That works:
+
+   - as extension for VS Code (DavidAnson.vscode-markdownlint):
+     https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint
+   - from command line/shell: https: //github.com/DavidAnson/markdownlint-cli2
+*/
 {
         "MD009": false,
         "MD038": false
 }
-

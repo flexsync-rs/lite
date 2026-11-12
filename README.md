@@ -101,7 +101,27 @@ For example, "logical" versions `1.2.4`, `1.2.5` and `1.2.6` (among other
 - `1.2.6+for-bin`
 - `          ...`
 
-full-lite-STOP
+## full-lite-STOP
+
+| version spec.    |
+| ---------------- |
+| `          ...`  |
+| `1.0.0-full.2.4` |
+| `1.0.0-full.2.5` |
+| `          ...`  |
+| `1.0.0-lite.0.0` |
+| `           ...` |
+| `1.0.0-lite.2.4` |
+| `1.0.0-lite.2.5` |
+| `          ...`  |
+|                  |
+| `1.0.0-STOP.0.0` |
+| `           ...` |
+| `1.0.0-STOP.2.4` |
+| `1.0.0-STOP.2.5` |
+| `           ...` |
+
+that is:
 
 - `          ...`
 - `1.0.0-full.2.4`
@@ -129,7 +149,6 @@ full-lite-STOP
     - every `lite-enabled-library="=1.0.0-full.x.y"` (exact version) - not
       recommended; or
     - `lite="=0.1.1+lite"` (recommended).
-
 - `           ...`
 - `1.0.0-lite.2.4`
 - `1.0.0-lite.2.5`
