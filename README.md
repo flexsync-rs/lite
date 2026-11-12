@@ -103,23 +103,23 @@ For example, "logical" versions `1.2.4`, `1.2.5` and `1.2.6` (among other
 
 ## full-lite-STOP
 
-| version spec.    |
-| ---------------- |
-| `          ...`  |
-| `1.0.0-full.2.4` |
-| `1.0.0-full.2.5` |
-| `          ...`  |
-| `1.0.0-lite.0.0` |
-| `           ...` |
-| `1.0.0-lite.2.4` |
-| `1.0.0-lite.2.5` |
-| `          ...`  |
-|                  |
-| `1.0.0-STOP.0.0` |
-| `           ...` |
-| `1.0.0-STOP.2.4` |
-| `1.0.0-STOP.2.5` |
-| `           ...` |
+| version spec.    |     |
+| ---------------- | --- |
+| `          ...`  |     |
+| `1.0.0-full.2.4` |     |
+| `          ...`  |     |
+| `1.0.0-lite.0.0` |     |
+| `           ...` |     |
+| `1.0.0-lite.2.4` |     |
+| `          ...`  |     |
+|                  |     |
+| `1.0.0-STOP.0.0` | remove a required feature?    |
+| `           ...` |     |
+| `1.0.0-STOP.2.4` |     |
+| `           ...` |     |
+
+- _ok_ to auto-resolve to `-STOP`
+- _bad_ to auto-_update_ to `-STOP`
 
 that is:
 
@@ -173,7 +173,6 @@ enable it.
     - We DO want this automatic update.
       - Do we?!
 - AND: do NOT have that extra cargo feature for `-lib` or `-lite`.
-
 
 `x.0.0-lib.y.z+for-lib` and `x.y.z+for-bin` versions are identical, except that:
 
