@@ -1,24 +1,20 @@
 # lite: lightweight library dev
 
-`lite` crate ([crates.io/crates/lite](https://crates.io/crateslite/)) sets a
-convention, and scaffolding (to support this convention), for versioning of Rust
-_library_ crates that offer alternative, _lite_/lightweight subset of their
-functionality, so as to speed up local development.
+`lite` crate ([crates.io/crates/lite](https://crates.io/crateslite/)) helps with
+making versions of Rust _library_ crates that offer alternative,
+_lite_/lightweight subset of their functionality, so as to speed up local
+development.
 
-(`lite` crate itself has little functionality, mostly this documentation,
-compile time checks, tests.)
+## lite-enabled versions
 
-## lite versioning
+Many consumer _library_ crates (in full, or their part(s) gated by _features_)
+may have alternative/replacement versions written to compile without some
+heavier dependencies (like proc macros). They may _not_ be fully runnable (or
+_not_ runnable at all) that way. But, since they are "compile time-compatible"
+(they do compile, and they have same API), this allows fast responses from
+`rust-analyzer` and fast navigation & development of:
 
-Some consumer _library_ crates (in full, or their part(s) gated by features (see
-[The Cargo Book >
-Features](https://doc.rust-lang.org/cargo/reference/features.html))) may be
-easily written to compile without some heavier dependencies (like proc macros).
-They may _not_ be fully runnable (or _not_ runnable at all) that way. But, since
-they are compile time-compatible, this allows fast responses from
-`rust-analyzer` and fast navigation/development of:
-
-- those libraries themselves, and
+- those libraries themselves; and
 - their consumers that are also libraries.
 
 To achieve that, follow this to
@@ -32,44 +28,75 @@ All this applies _only_ to library crates published on crates.io (or compatible
 registries). This does _not_ work when referring to local dependencies by path,
 or to dependencies in GIT.
 
-### Scope: only versioning - no special cargo features
+### lite-enabled versions or features?
 
-`lite` concentrates on alternative versioning where a library skips some
-dependencies. It, on its own, does _not_ define, and does not need/use, any
-[cargo features](https://doc.rust-lang.org/cargo/reference/features.html)
-(defined in a crate's `Cargo.toml`).
+`lite` concentrates on alternative _versions_ where a library skips some
+dependencies. It, on its own, does _not_ define, and does not need
+`lite`-enabled crates to have any special _features_ (defined in a crate's
+`Cargo.toml`, see [The Cargo Book >
+Features](https://doc.rust-lang.org/cargo/reference/features.html)).
 
-Of course, you **can** use features to offer a somewhat lightweight subset of
-your crate. And, you can use both: features and `lite` versioning. Then `lite`
-versioning should provide an (even) lighter version of the same features. For
-example, [crates.io/crates/flexsync](https://crates.io/crates/flexsync) uses
-both (more below).
+(`lite` crate itself does have a _feature_ `lite`, which is used to pin `lite`
+versions of any `lite`-enabled crates. But, those crates themselves don't need
+to define any `lite` _feature_.)
 
-However, even if you gate advanced/demanding/extra functionality behind
-features, your consumers can't control which features their (direct or indirect)
-dependencies choose. You _can_ try [overriding
-dependencies](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html)
-with `patch` or `paths` ([path
-overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides))...
+However, the core principle of a `lite` version doesn't involve any _features_
+(in your or 3rd party crates).
+
+#### lite-enabled versions and lightweight features
+
+You **can** use _features_ to separate lightweight subset(s) of your crate (even
+without it being a `lite` version). And, you can use both: _features_ and a
+`lite` versions. Then a `lite` version should provide an (even) lighter version
+of the same _features_. For example,
+[crates.io/crates/flexsync](https://crates.io/crates/flexsync) uses both (more
+below).
+
+Of course, if you are maintaining an existing crate, gating existing
+functionality behind new _features_ would be a breaking change. That would need
+a new major version. However, if you can create a "compile time-compatible"
+lighter version (compile time-compatible with existing API), then you can make
+such a version `lite`-enabled.
+
+Some crates may have a `lite` version available for any combination of their
+_features_. Or they may have a `lite` version available only for a subset of
+their _features_. [crates.io/crates/flexsync](https://crates.io/crates/flexsync)
+is such an example.
+
+## How 
+
+The core problem that `lite` approach solves is achieving two contradictory
+goals:
+
+- allowing any dependent crate to activate/choose `lite` versions of any (direct
+  or indirect) `lite`-enabled library dependencies; and
+- having any dependent crate (and `cargo add`, and `cargo update`) default to
+  the _non_-`lite`, that is, runnable versions of any (direct or indirect)
+  `lite`-enabled library dependencies.
+
+## How not
+
+We don't use:
+
+- [overriding
+  dependencies](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html)
+  with `patch` or `paths` ([path
+  overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides))
+- [pre-release
+  versions](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
+
+## stable and nightly Rust
 
 With `lite` versioning, your consumers, if library crates themselves, can choose
 a `lite` version, even if any (direct or indirect) dependencies ask for `full`
 version.
 
-Some crates may have fewer, or different, dependencies for their `lite` version,
-depending on any features being enabled. That applies to
-[crates.io/crates/flexsync](https://crates.io/crates/flexsync), too. And you may
-want to add such features to support lightweight use cases. However, such
-features themselves are not specific to `lite` versioning itself.
-
-## Version streams; pre-release only
+## @TODO Version streams; pre-release only
 
 Each "logical" version of `flexsync` has three "physical" versions (or "streams"
 of "physical" versions) on
-[crates.io/crates/flexsync](https://crates.io/crates/flexsync). They all use
-[pre-release
-suffix](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
-in the versions identifiers.
+[crates.io/crates/flexsync](https://crates.io/crates/flexsync). They all use in
+the versions identifiers.
 
 | Consumer crate | use pre-release | use release |
 | -------------- | --------------- | ----------- |
