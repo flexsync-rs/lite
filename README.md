@@ -1,20 +1,22 @@
 # lite: lightweight library dev
 
 `lite` crate ([crates.io/crates/lite](https://crates.io/crateslite/)) sets a
-convention for versioning of Rust _library_ crates that offer alternative,
-_lite_/lightweight subset of their functionality, so as to speed up local
-development.
+convention, and scaffolding (to support this convention), for versioning of Rust
+_library_ crates that offer alternative, _lite_/lightweight subset of their
+functionality, so as to speed up local development.
 
 (`lite` crate itself has little functionality, mostly this documentation,
 compile time checks, tests.)
 
 ## lite versioning
 
-Some consumer _library_ crates may be easily written to compile without some
-heavier dependencies (like proc macros). They may _not_ be fully runnable (or
-_not_ runnable at all) that way. But, since they are compile time-compatible,
-this allows fast responses from `rust-analyzer` and fast navigation/development
-of:
+Some consumer _library_ crates (in full, or their part(s) gated by features (see
+[The Cargo Book >
+Features](https://doc.rust-lang.org/cargo/reference/features.html))) may be
+easily written to compile without some heavier dependencies (like proc macros).
+They may _not_ be fully runnable (or _not_ runnable at all) that way. But, since
+they are compile time-compatible, this allows fast responses from
+`rust-analyzer` and fast navigation/development of:
 
 - those libraries themselves, and
 - their consumers that are also libraries.
@@ -103,23 +105,24 @@ For example, "logical" versions `1.2.4`, `1.2.5` and `1.2.6` (among other
 
 ## full-lite-STOP
 
-| version spec.    |     |
-| ---------------- | --- |
-| `          ...`  |     |
-| `1.0.0-full.2.4` |     |
-| `          ...`  |     |
-| `1.0.0-lite.0.0` |     |
-| `           ...` |     |
-| `1.0.0-lite.2.4` |     |
-| `          ...`  |     |
-|                  |     |
-| `1.0.0-STOP.0.0` | remove a required feature?    |
-| `           ...` |     |
-| `1.0.0-STOP.2.4` |     |
-| `           ...` |     |
+| your crate       |             |
+| ---------------- | ----------- |
+| `          ...`  |             |
+| `1.0.0-full.2.4` |             |
+| `          ...`  |             |
+| `1.0.0-lite.0.0` |             |
+| `           ...` |             |
+| `1.0.0-lite.2.4` |             |
+| `          ...`  |             |
+|                  |             |
+| `1.0.0-STOP.0.0` |     no-link |
+| `           ...` |             |
+| `1.0.0-STOP.2.4` |             |
+| `           ...` |             |
 
-- _ok_ to auto-resolve to `-STOP`
-- _bad_ to auto-_update_ to `-STOP`
+- _ok_ to auto-_update_ Cargo._lock_ to `-STOP`
+- _bad_ to auto-_upgrade_ Cargo._toml_ to `-STOP`
+- _bad_ to auto-_add_ Cargo._toml_ to `-STOP`
 
 that is:
 
@@ -131,13 +134,12 @@ that is:
 - `1.0.0-full.2.5`
   - in doctests/unit tests/integration tests (of consumer libraries), import as
     a _dev_ dependency either
-    - every `lite-enabled-library="=1.0.0-full.x.y"` (exact version) - but
-      _not_ normally recommended as it pins this dependency; or
+    - every `lite-enabled-library="=1.0.0-full.x.y"` (exact version) - but _not_
+      normally recommended as it pins this dependency; or
     - `lite="=0.1.1+lite"` (exact version), so that it conflicts with
       `lite="=0.1.2+STOP"` below. Recommended, as it updates to/matches any
-      newer versions of `lite-enabled-library`. Also, you don't need to
-      repeat that (specifying exact such version) for every `lite`-enabled
-      dependency.
+      newer versions of `lite-enabled-library`. Also, you don't need to repeat
+      that (specifying exact such version) for every `lite`-enabled dependency.
     
     Both ways prevent matching `0.1.2-STOP.*.*`, and hence the library crate and
     its doctets/unit tests/integration tests _do_ link.
