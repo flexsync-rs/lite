@@ -7,11 +7,11 @@ development.
 
 ## lite-enabled versions
 
-Many consumer _library_ crates (in full, or their part(s) gated by _features_)
-may have alternative/replacement versions written to compile without some
-heavier dependencies (like proc macros). They may _not_ be fully runnable (or
-_not_ runnable at all) that way. But, since they are "compile time-compatible"
-(they do compile, and they have same API), this allows fast responses from
+Many consumer _library_ crates may have alternative/replacement versions written
+to compile with much simpler code, and possibly without some heavier
+dependencies (like proc macros). They may _not_ be fully runnable (or even _not_
+runnable at all) that way. But, since they are "compile time-compatible" (they
+do compile, and they have same API), this allows fast responses from
 `rust-analyzer` and fast navigation & development of:
 
 - those libraries themselves; and
@@ -25,8 +25,8 @@ To achieve that, follow this to
 ### Scope: only crates.io
 
 All this applies _only_ to library crates published on crates.io (or compatible
-registries). This does _not_ work when referring to local dependencies by path,
-or to dependencies in GIT.
+registries). This does _not_ work for local dependencies (by path), or for
+dependencies from GIT.
 
 ### lite-enabled versions or features?
 
@@ -63,20 +63,21 @@ _features_. Or they may have a `lite` version available only for a subset of
 their _features_. [crates.io/crates/flexsync](https://crates.io/crates/flexsync)
 is such an example.
 
-## How 
+## Goals
 
 The core problem that `lite` approach solves is achieving two contradictory
 goals:
 
-- allowing any dependent crate to activate/choose `lite` versions of any (direct
-  or indirect) `lite`-enabled library dependencies; and
-- having any dependent crate (and `cargo add`, and `cargo update`) default to
-  the _non_-`lite`, that is, runnable versions of any (direct or indirect)
-  `lite`-enabled library dependencies.
+- allowing any dependent crate to activate/choose `lite` versions of all of its
+  (direct or indirect) `lite`-enabled library dependencies; while also
+- having any `lite`-enabled library (and `cargo add`, and `cargo update`)
+  *default* to the _non_-`lite` version. That is, *default* to runnable versions
+  of any (direct or indirect) `lite`-enabled library dependencies (unless
+  activated to use their `lite` versions as per the previous goal).
 
-## How not
+### How not
 
-We don't use:
+We do _not_ use:
 
 - [overriding
   dependencies](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html)
@@ -85,7 +86,10 @@ We don't use:
 - [pre-release
   versions](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
 
-## stable and nightly Rust
+because they are impossible to apply to transient dependencies while achieving
+out two [goals](#goals).
+
+### stable and nightly Rust
 
 With `lite` versioning, your consumers, if library crates themselves, can choose
 a `lite` version, even if any (direct or indirect) dependencies ask for `full`
