@@ -1,6 +1,6 @@
 [package]
 name = "lite"
-giversion = "0.1.1+lite"
+version = "0.1.1+LITE-ON-NIGHTLY"
 
 #edition = "2024"
 edition = "2021"
@@ -14,7 +14,6 @@ categories = ["no-std", "no-std::no-alloc", "rust-patterns"]
 keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
 
 repository = "https://github.com/flexsync-rs/lite"
-homepage = "https://github.com/flexsync-rs/lite"
 
 [lints.rust]
 unexpected_cfgs = { level = "forbid"}

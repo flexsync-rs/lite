@@ -30,15 +30,24 @@ dependencies from GIT.
 
 ### lite-enabled versions or features?
 
-`lite` concentrates on alternative _versions_ where a library skips some
-dependencies. It, on its own, does _not_ define, and does not need
+`lite` concentrates on alternative _versions_ where a library simplifies its
+code (and often skips some dependencies). It, on its own, does _not_ need
 `lite`-enabled crates to have any special _features_ (defined in a crate's
 `Cargo.toml`, see [The Cargo Book >
 Features](https://doc.rust-lang.org/cargo/reference/features.html)).
 
-(`lite` crate itself does have a _feature_ `lite`, which is used to pin `lite`
-versions of any `lite`-enabled crates. But, those crates themselves don't need
-to define any `lite` _feature_.)
+However, maintenance of a `lite`-enabled library may be easier with a dedicated
+_feature_, so that you keep the _full_ and `lite` versions of functions side by
+side. For that we suggest 
+- call the feature `lite_on_nightly` (_not_ just `lite`, because as of 2026
+  there is 400 crates with a feature called `lite`)
+- to prevent confusion for consumers, trigger
+  [`compile_error!`](https://doc.rust-lang.org/nightly/std/macro.compile_error.html)
+  if `lite_on_nightly` is used outside the `LITE_ON_NIGHTLY` version of your
+  crate.
+
+(`lite` crate itself also has a _feature_ `lite_on_nightly`, which is used to
+pin `lite` versions of any `lite`-enabled crates.)
 
 However, the core principle of a `lite` version doesn't involve any _features_
 (in your or 3rd party crates).
@@ -65,15 +74,18 @@ is such an example.
 
 ## Goals
 
-The core problem that `lite` approach solves is achieving two contradictory
-goals:
+The core problem that `lite` approach solves is achieving contradictory goals:
 
-- allowing any dependent crate to activate/choose `lite` versions of all of its
-  (direct or indirect) `lite`-enabled library dependencies; while also
+- allowing any dependent crate to import any `lite`-enabled library dependencies
+  in the same way, regardless of whether those dependencies will be activated as
+  `lite` or used in their _full_ version
 - having any `lite`-enabled library (and `cargo add`, and `cargo update`)
-  *default* to the _non_-`lite` version. That is, *default* to runnable versions
-  of any (direct or indirect) `lite`-enabled library dependencies (unless
-  activated to use their `lite` versions as per the previous goal).
+  *default* to the _full_ (_non_-`lite`) version. That is, *default* to runnable
+  versions of any (direct or indirect) `lite`-enabled library dependencies
+  (unless activated to use their `lite` versions as per the next goal); while
+  also
+- allowing any dependent crate to activate/choose `lite` versions of all of its
+  `lite`-enabled library dependencies (direct or indirect)
 
 ### How not
 
@@ -91,9 +103,8 @@ out two [goals](#goals).
 
 ### stable and nightly Rust
 
-With `lite` versioning, your consumers, if library crates themselves, can choose
-a `lite` version, even if any (direct or indirect) dependencies ask for `full`
-version.
+With `lite` versioning, your consumers can choose a `lite` version, even if any
+dependencies (direct or indirect) ask for a _full_ version.
 
 ## @TODO Version streams; pre-release only
 
