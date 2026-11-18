@@ -133,48 +133,30 @@ versions:
   `+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
   `+LITE_ON_NIGHTLY` versions.
 
-|                                                 | full functionality   | `lite` development only | full functionality on `nightly` only |
-| ----------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
-| _library_ version                               | `x.y.0+FULL`         | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY`              |
-| `...`                                           | `x.y.3+FULL`         | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY`              |
-| `...`                                           | `x.y.6+FULL`         | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY`              |
-| `...`                                           | `...`                | `...`                   | `...`                                |
-|                                                 |                      |                         |                                      |
-| _full_ functionality on toolchain               | `stable` & `nightly` |                         | `nightly`                            |
-| default (newest/highest) on toolchain           | `stable`             |                         | `nightly`                            |
-|                                                 |                      |                         |                                      |
-| for `test, doc, example, bin`                   | ✓                    |                         | ✓                                    |
-| for `lite`-enabled dev only                     |                      | ✓                       |                                      |
-|                                                 |                      |                         |                                      |
-| newest/highest published version                |                      |                         | ✓                                    |
-| _yanked_ every 6 weeks                          |                      | ✓                       | ✓                                    |
-|                                                 |                      |                         |                                      |
-| needs to commit `Cargo.lock`                    |                      |                         | ✓                                    |
-| needs manual switch to `x.y.z+FULL`             |                      |                         | ✓                                    |
-|                                                 |                      |                         |                                      |
-| specifies version of `lite` as                  | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+FULL`                         |
-| resolves version of `lite` to                   | `0.2.0+FULL`         | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`              |
-|                                                 |                      |                         |                                      |
-| specifies `default-features=false` for `lite`   | ✓                    | ✓                       | ✓                                    |
-| specifies _features_ of `lite`                  |                      | `["lite_on_nightly"]`   |                                      |
-
-
-## full-lite-STOP
-
-| your crate       |             |
-| ---------------- | ----------- |
-| `          ...`  |             |
-| `1.0.0-full.2.4` |             |
-| `          ...`  |             |
-| `1.0.0-lite.0.0` |             |
-| `           ...` |             |
-| `1.0.0-lite.2.4` |             |
-| `          ...`  |             |
-|                  |             |
-| `1.0.0-STOP.0.0` |     no-link |
-| `           ...` |             |
-| `1.0.0-STOP.2.4` |             |
-| `           ...` |             |
+|                                                             | full functionality   | `lite` development only | full functionality on `nightly` only |
+| ----------------------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
+| (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY`              |
+| `...`                                                       | `x.y.3+FULL`         | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY`              |
+| `...`                                                       | `x.y.6+FULL`         | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY`              |
+| `...`                                                       | `...`                | `...`                   | `...`                                |
+|                                                             |                      |                         |                                      |
+| _full_ functionality on toolchain                           | `stable` & `nightly` |                         | `nightly`                            |
+| default (resolves to, and used by `cargo add`) on toolchain | `stable`             |                         | `nightly`                            |
+|                                                             |                      |                         |                                      |
+| for `test, doc, example, bin`                               | ✓                    |                         | ✓                                    |
+| for `lite`-enabled dev only                                 |                      | ✓                       |                                      |
+|                                                             |                      |                         |                                      |
+| newest/highest published version                            |                      |                         | ✓                                    |
+| _yanked_ every 6 weeks                                      |                      | ✓                       | ✓                                    |
+|                                                             |                      |                         |                                      |
+| needs to commit `Cargo.lock`                                |                      |                         | ✓                                    |
+| needs manual switch to `x.y.z+FULL`                         |                      |                         | ✓                                    |
+|                                                             |                      |                         |                                      |
+| specifies version of `lite` as                              | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+FULL`                         |
+| resolves version of `lite` to                               | `0.2.0+FULL`         | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`              |
+|                                                             |                      |                         |                                      |
+| specifies `default-features=false` for `lite`               | ✓                    | ✓                       | ✓                                    |
+| specifies _features_ of `lite`                              |                      | `["lite_on_nightly"]`   |                                      |
 
 - _ok_ to auto-_update_ Cargo._lock_ to `-STOP`
 - _bad_ to auto-_upgrade_ Cargo._toml_ to `-STOP`

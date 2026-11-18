@@ -1,9 +1,10 @@
 [package]
 name = "lite"
-version = "0.1.1+LITE-ON-NIGHTLY"
+version = "0.1.2+ON-1.102"
 
 #edition = "2024"
 edition = "2021"
+rust-version = "1.102.0"
 
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 
