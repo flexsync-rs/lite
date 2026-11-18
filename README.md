@@ -5,11 +5,11 @@
 with making alternative _lite_/lightweight versions of Rust _library_ crates, so
 as to speed up local development.
 
-# nightly and stable Rust
+## nightly and stable Rust
 
 _Activating_ (using) `lite` versions does require `nightly` Rust toolchain.
-However, `full` versions work with `stable` Rust (if the functionality doesn't
-need `nightly`), and with `nightly` Rust, too.
+However, `full` versions will work with `stable` Rust (if the library compiles
+on `stable`), and with `nightly` Rust, too.
 
 ## lite-enabled versions
 
@@ -125,17 +125,32 @@ our [goals](#goals).
 ## version streams
 
 Any `lite`-enabled Rust library should have three alternating "streams" of
+versions. Or, each release/"logical" version is a triplet of three "physical"
 versions:
 
-|       |       |       |     | metadata suffix    | newest | default on | `lite` activated | regularly yanked | version of `lite`       | feature of `lite` | `lite` activates `no-link` |
-| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ---------------- | ---------------- | ----------------------- | ----------------- | -------------------------- |
-| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                  |                  | `0.2.0+FULL`            |                   |                            |
-| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            | ✓                | ✓                | `0.2.1+LITE_ON_NIGHTLY` | `lite_on_nightly` | ✓                          |
-| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                  | ✓                | `0.2.2+FULL_ON_NIGHTLY` |                   |                            |
+|       |       |       |     | metadata suffix    | newest | default on | for tests/docs/bin |`lite` _activated_ | regularly yanked | version of `lite`       | _features_ of `lite`  |
+| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ------------------ | ----------------- | ---------------- | ----------------------- | --------------------- |
+| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                    |                   |                  | `0.2.0+FULL`            |                       |
+| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            |                    |                   | ✓                | `0.2.1+LITE_ON_NIGHTLY` | `["lite_on_nightly"]` |
+| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                    |                   | ✓                | `0.2.2+FULL_ON_NIGHTLY` |                       |
 
 `lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
 `+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
 `+LITE_ON_NIGHTLY` versions.
+
+|                      |              |                         |                         |
+| -------------------- | ------------ | ----------------------- | ----------------------- |
+| _library_ version    | `x.y.0+FULL` | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY` |
+|                      | `x.y.3+FULL` | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY` |
+|                      | `x.y.6+FULL` | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY` |
+|                      | `...`        | `...`                   | `...`                   |
+| newest (highest)     |              |                         | ✓                       |
+| yanked every 6 weeks |              | ✓                       | ✓                       |
+| default on toolchain | `stable`     |                         | `nightly`               |
+| for `test, doc, bin` | ✓            |                         |                         |
+| version of `lite`    | `0.2.0+FULL` | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY` |
+| _features_ of `lite` |              | `["lite_on_nightly"]`   |                         |
+
 
 ## full-lite-STOP
 
