@@ -138,18 +138,25 @@ versions:
 `+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
 `+LITE_ON_NIGHTLY` versions.
 
-|                      |              |                         |                         |
-| -------------------- | ------------ | ----------------------- | ----------------------- |
-| _library_ version    | `x.y.0+FULL` | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY` |
-|                      | `x.y.3+FULL` | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY` |
-|                      | `x.y.6+FULL` | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY` |
-|                      | `...`        | `...`                   | `...`                   |
-| newest (highest)     |              |                         | ✓                       |
-| yanked every 6 weeks |              | ✓                       | ✓                       |
-| default on toolchain | `stable`     |                         | `nightly`               |
-| for `test, doc, bin` | ✓            |                         |                         |
-| version of `lite`    | `0.2.0+FULL` | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY` |
-| _features_ of `lite` |              | `["lite_on_nightly"]`   |                         |
+|                                     |              |                         | `FULL_ON_NIGHTLY` or `STOP` or `READ_DOCS`                    |
+| ----------------------------------- | ------------ | ----------------------- | ------------------------------------------------------------- |
+| _library_ version                   | `x.y.0+FULL` | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
+|                                     | `x.y.3+FULL` | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
+|                                     | `x.y.6+FULL` | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
+|                                     | `...`        | `...`                   | `...`                                                         |
+| newest (highest)                    |              |                         | ✓                                                             |
+| yanked every 6 weeks                |              | ✓                       | ✓                                                             |
+|                                     |              |                         |                                                               |
+| default on toolchain                | `stable`     |                         | `nightly`                                                     |
+|                                     |              |                         |                                                               |
+|                                     |              |                         |                                                               |
+|                                     |              |                         |                                                               |
+| for `test, doc, example, bin`       | ✓            |                         | ✓                                                             |
+| for `lite`-enabled dev only         |              | ✓                       |                                                               |
+|                                     |              |                         |                                                               |
+| uses version of `lite`              | `0.2.0+FULL` | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`                                       |
+| `default-features=false` for `lite` | ✓            | ✓                       | ✓                                                             |
+| uses _features_ of `lite`           |              | `["lite_on_nightly"]`   |                                                               |
 
 
 ## full-lite-STOP
