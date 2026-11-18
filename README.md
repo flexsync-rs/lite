@@ -130,14 +130,14 @@ versions:
 
 - `stable` toolchain acts as a stopper.
 - `lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
-  `+STOP_AND_READ_DOCS` versions, and it fixes the library crates to
+  `+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
   `+LITE_ON_NIGHTLY` versions.
 
 |                                                 | full functionality   | `lite` development only | full functionality on `nightly` only |
 | ----------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
-| _library_ version                               | `x.y.0+FULL`         | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+STOP_AND_READ_DOCS`           |
-| `...`                                           | `x.y.3+FULL`         | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+STOP_AND_READ_DOCS`           |
-| `...`                                           | `x.y.6+FULL`         | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+STOP_AND_READ_DOCS`           |
+| _library_ version                               | `x.y.0+FULL`         | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY`              |
+| `...`                                           | `x.y.3+FULL`         | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY`              |
+| `...`                                           | `x.y.6+FULL`         | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY`              |
 | `...`                                           | `...`                | `...`                   | `...`                                |
 |                                                 |                      |                         |                                      |
 | _full_ functionality on toolchain               | `stable` & `nightly` |                         | `nightly`                            |
@@ -153,7 +153,7 @@ versions:
 | needs manual switch to `x.y.z+FULL`             |                      |                         | ✓                                    |
 |                                                 |                      |                         |                                      |
 | specifies version of `lite` as                  | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+FULL`                         |
-| resolves version of `lite` to                   | `0.2.0+FULL`         | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+STOP_AND_READ_DOCS`           |
+| resolves version of `lite` to                   | `0.2.0+FULL`         | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`              |
 |                                                 |                      |                         |                                      |
 | specifies `default-features=false` for `lite`   | ✓                    | ✓                       | ✓                                    |
 | specifies _features_ of `lite`                  |                      | `["lite_on_nightly"]`   |                                      |
