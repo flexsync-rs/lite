@@ -1,34 +1,54 @@
+
 # lite: lightweight library dev
 
-`lite` crate ([crates.io/crates/lite](https://crates.io/crateslite/)) helps with
-making versions of Rust _library_ crates that offer alternative,
-_lite_/lightweight subset of their functionality, so as to speed up local
-development.
+`lite` crate ([crates.io/crates/lite](https://crates.io/crates/lite/)) helps
+with making alternative _lite_/lightweight versions of Rust _library_ crates, so
+as to speed up local development.
+
+# nightly and stable Rust
+
+_Activating_ (using) `lite` versions does require `nightly` Rust toolchain.
+However, `full` versions work with `stable` Rust (if the functionality doesn't
+need `nightly`), and with `nightly` Rust, too.
 
 ## lite-enabled versions
 
-Many consumer _library_ crates may have alternative/replacement versions written
-to compile with much simpler code, and possibly without some heavier
-dependencies (like proc macros). They may _not_ be fully runnable (or even _not_
-runnable at all) that way. But, since they are "compile time-compatible" (they
-do compile, and they have same API), this allows fast responses from
-`rust-analyzer` and fast navigation & development of:
+Many _library_ crates may have alternative/replacement versions written to
+compile with much simpler code, and possibly without some heavier dependencies
+(like proc macros). They may _not_ be fully runnable (or even _not_ runnable at
+all) that way. But, if they are "compile time-compatible" (they do compile, and
+they have same API), this allows fast responses from `rust-analyzer` and fast
+navigation & development of:
 
 - those libraries themselves; and
-- their consumers that are also libraries.
+- their consumers (dependents).
 
-To achieve that, follow this to
+To achieve that, follow this to:
 
-- import other `lite`-versioned library crates, and
-- apply `lite` versioning to your library crate.
+- import `lite`-enabled library crates, and
+- `lite`-enable your library crate.
 
-### Scope: only crates.io
+### scope: only crates.io
 
 All this applies _only_ to library crates published on crates.io (or compatible
 registries). This does _not_ work for local dependencies (by path), or for
 dependencies from GIT.
 
-### lite-enabled versions or features?
+### scope: activate all - or none
+
+You can only _activate_ `lite` versions of _all_ `lite`-enabled dependencies
+(direct or indirect), or none. No granularity.
+
+### scope: const values need attention (@TODO)
+
+If a `const` value depends on `lite`-enabled functionality, then the `lite`
+version (of that functionality) must be runnable. Or you can use [conditional
+compilation](https://doc.rust-lang.org/reference/conditional-compilation.html)
+with an alternative expression to be used for `lite` versions only. However, by
+diverging the code between `full` and `lite` versions you may introduce logical
+errors.
+
+### lite-enabled: versions or features?
 
 `lite` concentrates on alternative _versions_ where a library simplifies its
 code (and often skips some dependencies). It, on its own, does _not_ need
@@ -36,28 +56,28 @@ code (and often skips some dependencies). It, on its own, does _not_ need
 `Cargo.toml`, see [The Cargo Book >
 Features](https://doc.rust-lang.org/cargo/reference/features.html)).
 
-However, maintenance of a `lite`-enabled library may be easier with a dedicated
-_feature_, so that you keep the _full_ and `lite` versions of functions side by
-side. For that we suggest 
+However, maintenance of a `lite`-enabled library is probably easier with a
+dedicated _feature_, so that you can use [conditional
+compilation](https://doc.rust-lang.org/reference/conditional-compilation.html)
+to keep the _full_ and `lite` versions of functions side by side (in the same
+source files). For that we suggest:
+
 - call the feature `lite_on_nightly` (_not_ just `lite`, because as of 2026
-  there is 400 crates with a feature called `lite`)
+  there is 400 versions of crates with a feature called `lite`)
 - to prevent confusion for consumers, trigger
-  [`compile_error!`](https://doc.rust-lang.org/nightly/std/macro.compile_error.html)
+  [`core::compile_error!`](https://doc.rust-lang.org/core/macro.compile_error.html)
   if `lite_on_nightly` is used outside the `LITE_ON_NIGHTLY` version of your
   crate.
 
 (`lite` crate itself also has a _feature_ `lite_on_nightly`, which is used to
 pin `lite` versions of any `lite`-enabled crates.)
 
-However, the core principle of a `lite` version doesn't involve any _features_
-(in your or 3rd party crates).
+### optionally both: versions and lightweight features
 
-#### lite-enabled versions and lightweight features
-
-You **can** use _features_ to separate lightweight subset(s) of your crate (even
-without it being a `lite` version). And, you can use both: _features_ and a
-`lite` versions. Then a `lite` version should provide an (even) lighter version
-of the same _features_. For example,
+You could have _features_ to separate lightweight subset(s) of your (library)
+crate (even without the crate being `lite`-enabled). And, you could have
+**both**: _features_ and a `lite` versions. Then a `lite` version should provide
+an (even) lighter version of the selected _feature(s)_. For example,
 [crates.io/crates/flexsync](https://crates.io/crates/flexsync) uses both (more
 below).
 
@@ -69,25 +89,26 @@ such a version `lite`-enabled.
 
 Some crates may have a `lite` version available for any combination of their
 _features_. Or they may have a `lite` version available only for a subset of
-their _features_. [crates.io/crates/flexsync](https://crates.io/crates/flexsync)
-is such an example.
+their _features_ ([crates.io/crates/flexsync](https://crates.io/crates/flexsync)
+is such an example).
 
-## Goals
+## details
+
+### goals
 
 The core problem that `lite` approach solves is achieving contradictory goals:
 
-- allowing any dependent crate to import any `lite`-enabled library dependencies
-  in the same way, regardless of whether those dependencies will be activated as
-  `lite` or used in their _full_ version
-- having any `lite`-enabled library (and `cargo add`, and `cargo update`)
-  *default* to the _full_ (_non_-`lite`) version. That is, *default* to runnable
-  versions of any (direct or indirect) `lite`-enabled library dependencies
-  (unless activated to use their `lite` versions as per the next goal); while
-  also
-- allowing any dependent crate to activate/choose `lite` versions of all of its
-  `lite`-enabled library dependencies (direct or indirect)
+- Allowing any dependent crate to import any `lite`-enabled library dependencies
+  in the same way, regardless of whether those dependencies will be _activated_
+  as `lite` or used in their _full_ (runnable) version.
+- Having any `lite`-enabled library (and `cargo add`, and `cargo update`)
+  *default* to the _full_ (**non**-`lite`) version. That is, any `lite`-enabled
+  library dependencies (direct or indirect) *default* to their runnable
+  versions.
+- Allowing any dependent crate to _activate_ `lite` versions of all
+  `lite`-enabled libraries being used (including indirect dependencies).
 
-### How not
+### other ways considered
 
 We do _not_ use:
 
@@ -96,17 +117,21 @@ We do _not_ use:
   with `patch` or `paths` ([path
   overrides](https://doc.rust-lang.org/cargo/reference/overriding-dependencies.html#paths-overrides))
 - [pre-release
-  versions](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
+  versions](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#pre-releases)
 
 because they are impossible to apply to transient dependencies while achieving
-out two [goals](#goals).
+our [goals](#goals).
 
-### stable and nightly Rust
+## version streams
 
-With `lite` versioning, your consumers can choose a `lite` version, even if any
-dependencies (direct or indirect) ask for a _full_ version.
+Any `lite`-enabled Rust library should have three alternating "streams" of
+versions:
 
-## @TODO Version streams; pre-release only
+| metadata suffix    | default on | newest | versions (examples)      | regularly yanked |
+| ------------------ | ---------- | ------ | ------------------------ | ---------------- |
+| `+FULL`            | `stable`   |        | x.y.0, x.y.3, x.y.6, ... |                  |
+| `+LITE_ON_NIGHTLY` |            |        | x.y.1, x.y.4, x.y.7, ... | [x]              |
+| `+FULL_ON_NIGHTLY` | `nightly`  | [x]    | x.y.2, x.y.5, x.y.8, ... | [x]              |
 
 Each "logical" version of `flexsync` has three "physical" versions (or "streams"
 of "physical" versions) on
@@ -272,7 +297,7 @@ If a dependent library needs to specify an _exact minor_ version (or both an
 _exact minor_ version and an _exact patch_ version) of a library dependency that
 is `lite`-versioned, create another crate and use [Cargo Reference > Specifying
 Dependencies > Tilde
-Requirements](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#tilde-requirements)
+Requirements](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements)
 to create pre-release "channels/streams".
 
 This limitation applies only if the consumers also want to support the "lite"
@@ -321,14 +346,14 @@ _-lib-lite._ _CAN'T_ auto-update to/match (the next, or any newer) *+for-bin.
 ## See also
 
 - [Cargo Reference > Manifest > The version
-  Field](https://doc.rust-lang.org/nightly/cargo/reference/manifest.html#the-version-field)
+  Field](https://doc.rust-lang.org/cargo/reference/manifest.html#the-version-field)
   (among other): "The _pre-release_ part may be separated with _periods_ to
   distinguish separate _components_. Numeric components will use numeric
   comparison..."
 - [Cargo Reference > Specifying Dependencies >
-  Pre-releases](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#pre-releases)
+  Pre-releases](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#pre-releases)
 - [Cargo Reference > Specifying Dependencies >Version
-  metadata](https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#version-metadata).
+  metadata](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#version-metadata).
 
 ## Third party/related issues and Announcements
 
