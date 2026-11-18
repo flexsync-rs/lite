@@ -127,48 +127,15 @@ our [goals](#goals).
 Any `lite`-enabled Rust library should have three alternating "streams" of
 versions:
 
-|       |       |       |     | metadata suffix    | newest | default on | `lite_on_nightly` feature | regularly yanked |
-| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ------------------------- | ---------------- |
-| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                           |                  |
-| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            | ✓                         | ✓                |
-| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                           | ✓                |
+|       |       |       |     | metadata suffix    | newest | default on | `lite` activated | regularly yanked | version of `lite`       | feature of `lite` | `lite` activates `no-link` |
+| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ---------------- | ---------------- | ----------------------- | ----------------- | -------------------------- |
+| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                  |                  | `0.2.0+FULL`            |                   |                            |
+| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            | ✓                | ✓                | `0.2.1+LITE_ON_NIGHTLY` | `lite_on_nightly` | ✓                          |
+| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                  | ✓                | `0.2.2+FULL_ON_NIGHTLY` |                   |                            |
 
-Each "logical" version of `flexsync` has three "physical" versions (or "streams"
-of "physical" versions) on
-[crates.io/crates/flexsync](https://crates.io/crates/flexsync). They all use in
-the versions identifiers.
-
-| Consumer crate | use pre-release | use release |
-| -------------- | --------------- | ----------- |
-
-1. Pre-releases for consumers that are:
-   - (static) libraries, or
-   - development of (static) libraries.
-2. Releases: for binaries (and shared objects/dynamic libraries/proc macros).
-
-Each `x.y.z` "logical" version has three "physical" versions:
-
-- `x.0.0-lib.y.z+for-lib`
-- `x.0.0-lite.y.z+for-lib-dev`
-- `x.y.z+for-bin`
-
-For example, "logical" versions `1.2.4`, `1.2.5` and `1.2.6` (among other
-"logical" versions) will have three "physical" versions each:
-
-// @TODO elsewherE: remove +for-lib, +for-lib-dev
-
-- `1.0.0-lib.2.4`
-- `1.0.0-lib.2.5`
-- `1.0.0-lib.2.6`
-- `          ...`
-- `1.0.0-lite.2.4`
-- `1.0.0-lite.2.5`
-- `1.0.0-lite.2.6`
-- `           ...`
-- `1.2.4+for-bin`
-- `1.2.5+for-bin`
-- `1.2.6+for-bin`
-- `          ...`
+`lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
+`+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
+`+LITE_ON_NIGHTLY` versions.
 
 ## full-lite-STOP
 
