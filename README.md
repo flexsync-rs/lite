@@ -127,11 +127,11 @@ our [goals](#goals).
 Any `lite`-enabled Rust library should have three alternating "streams" of
 versions:
 
-| metadata suffix    | default on | newest | versions (examples)      | regularly yanked |
-| ------------------ | ---------- | ------ | ------------------------ | ---------------- |
-| `+FULL`            | `stable`   |        | x.y.0, x.y.3, x.y.6, ... |                  |
-| `+LITE_ON_NIGHTLY` |            |        | x.y.1, x.y.4, x.y.7, ... | [x]              |
-| `+FULL_ON_NIGHTLY` | `nightly`  | [x]    | x.y.2, x.y.5, x.y.8, ... | [x]              |
+|       |       |       |     | metadata suffix    | newest | default on | `lite_on_nightly` feature | regularly yanked |
+| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ------------------------- | ---------------- |
+| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                           |                  |
+| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            | ✓                         | ✓                |
+| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                           | ✓                |
 
 Each "logical" version of `flexsync` has three "physical" versions (or "streams"
 of "physical" versions) on
