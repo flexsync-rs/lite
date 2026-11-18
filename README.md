@@ -128,35 +128,30 @@ Any `lite`-enabled Rust library should have three alternating "streams" of
 versions. Or, each release/"logical" version is a triplet of three "physical"
 versions:
 
-|       |       |       |     | metadata suffix    | newest | default on | for tests/docs/bin |`lite` _activated_ | regularly yanked | version of `lite`       | _features_ of `lite`  |
-| ----- | ----- | ----- | --- | ------------------ | ------ | ---------- | ------------------ | ----------------- | ---------------- | ----------------------- | --------------------- |
-| x.y.0 | x.y.3 | x.y.6 | ... | `+FULL`            |        | `stable`   |                    |                   |                  | `0.2.0+FULL`            |                       |
-| x.y.1 | x.y.4 | x.y.7 | ... | `+LITE_ON_NIGHTLY` |        |            |                    |                   | ✓                | `0.2.1+LITE_ON_NIGHTLY` | `["lite_on_nightly"]` |
-| x.y.2 | x.y.5 | x.y.8 | ... | `+FULL_ON_NIGHTLY` | ✓      | `nightly`  |                    |                   | ✓                | `0.2.2+FULL_ON_NIGHTLY` |                       |
+- `stable` toolchain acts as a stopper.
+- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of `+STOP_AND_READ_DOCS` versions, and it fixes the library crates to `+LITE_ON_NIGHTLY` versions.
 
-`lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
-`+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
-`+LITE_ON_NIGHTLY` versions.
-
-|                                     |              |                         | `FULL_ON_NIGHTLY` or `STOP` or `READ_DOCS`                    |
+|                                     |              |                         | `STOP_AND_READ_DOCS`                    |
 | ----------------------------------- | ------------ | ----------------------- | ------------------------------------------------------------- |
-| _library_ version                   | `x.y.0+FULL` | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
-|                                     | `x.y.3+FULL` | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
-|                                     | `x.y.6+FULL` | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY` (needs manual switch to `x.y.0+FULL`) |
+| _library_ version                   | `x.y.0+FULL` | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+STOP_AND_READ_DOCS` |
+|                                     | `x.y.3+FULL` | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+STOP_AND_READ_DOCS` |
+|                                     | `x.y.6+FULL` | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+STOP_AND_READ_DOCS` |
 |                                     | `...`        | `...`                   | `...`                                                         |
-| newest (highest)                    |              |                         | ✓                                                             |
-| yanked every 6 weeks                |              | ✓                       | ✓                                                             |
 |                                     |              |                         |                                                               |
 | default on toolchain                | `stable`     |                         | `nightly`                                                     |
-|                                     |              |                         |                                                               |
-|                                     |              |                         |                                                               |
 |                                     |              |                         |                                                               |
 | for `test, doc, example, bin`       | ✓            |                         | ✓                                                             |
 | for `lite`-enabled dev only         |              | ✓                       |                                                               |
 |                                     |              |                         |                                                               |
-| uses version of `lite`              | `0.2.0+FULL` | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`                                       |
+| newest (highest)                    |              |                         | ✓                                                             |
+| _yanked_ every 6 weeks              |              | ✓                       | ✓                                                             |
+|                                     |              |                         |                                                               |
+| needs to commit `Cargo.lock`        |              |                         | ✓                                                             |
+| needs manual switch to `x.y.z+FULL` |              |                         | ✓                                                             |
+|                                     |              |                         |                                                               |
+| version of `lite`                   | `0.2.0+FULL` | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+STOP_AND_READ_DOCS`                                       |
 | `default-features=false` for `lite` | ✓            | ✓                       | ✓                                                             |
-| uses _features_ of `lite`           |              | `["lite_on_nightly"]`   |                                                               |
+| _features_ of `lite`                |              | `["lite_on_nightly"]`   |                                                               |
 
 
 ## full-lite-STOP
