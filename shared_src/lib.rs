@@ -30,8 +30,8 @@ macro_rules! internal_check_my_crate_manifest {
         $( $param:tt ),*
     ) => {
         {
-            // The other branches of this macro _would_ be much easier if version_stream were a
-            // constant instead. However, we make it a variable, and we pass it around, so that
+            // Branches of this macro _would_ be much easier if version_stream were a constant
+            // instead. However, we make it a variable, and we pass it around, so that
             // shared_tests/ensure_full_paths_in_macros.rs can compile this without evaluating it.
             let version_stream = {
                 // no need to use option_env!(..), because as per
