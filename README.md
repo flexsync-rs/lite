@@ -132,16 +132,16 @@ Any `lite`-enabled Rust library should have three alternating "streams" of
 versions. Or, each release/"logical" version has a triplet of three "physical"
 versions:
 
-- `stable` toolchain acts as a stopper.
-- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
-  `+FULL` versions, and it fixes the library crates to
+- `stable` toolchain acts as a stopper. It prevents majority of developers (on `stable`) from using `+LITE` or `+NIGHTLY` unintentionally.
+- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents resolving/updating _library_ crates to
+  their `+NIGHTLY` versions, and it pins them to
   `+LITE` versions.
 
 |                                                             | full functionality   | `lite` development only | full functionality on `nightly` only |
 | ----------------------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
-| (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE`            | `x.y.2+FULL`                         |
-| `...`                                                       | `x.y.3+FULL`         | `x.y.4+LITE`            | `x.y.5+FULL`                         |
-| `...`                                                       | `x.y.6+FULL`         | `x.y.7+LITE`            | `x.y.8+FULL`                         |
+| (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE`            | `x.y.2+NIGHTLY`                      |
+| `...`                                                       | `x.y.3+FULL`         | `x.y.4+LITE`            | `x.y.5+NIGHTLY`                      |
+| `...`                                                       | `x.y.6+FULL`         | `x.y.7+LITE`            | `x.y.8+NIGHTLY`                      |
 | `...`                                                       | `...`                | `...`                   | `...`                                |
 |                                                             |                      |                         |                                      |
 | _full_ functionality on toolchain                           | `stable` & `nightly` |                         | `nightly`                            |
@@ -154,10 +154,10 @@ versions:
 | _yanked_ every 6 weeks                                      |                      | ✓                       | ✓                                    |
 |                                                             |                      |                         |                                      |
 | needs to commit `Cargo.lock`                                |                      |                         | ✓                                    |
-| needs manual switch to `x.y.z+FULL`                         |                      |                         | ✓                                    |
+| needs manual switch in `Cargo.toml` to `x.y.z+FULL`         |                      |                         | ✓                                    |
 |                                                             |                      |                         |                                      |
-| specifies version of `lite` as                              | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+FULL`                         |
-| resolves version of `lite` to                               | `0.2.0+FULL`         | `0.2.1+LITE`            | `0.2.2+FULL`                         |
+| specifies version of `lite` as                              | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+NIGHTLY`                      |
+| resolves version of `lite` to                               | `0.2.0+FULL`         | `0.2.1+LITE`            | `0.2.2+NIGHTLY`                      |
 |                                                             |                      |                         |                                      |
 | specifies `default-features=false` for `lite`               | ✓                    | ✓                       | ✓                                    |
 | specifies _features_ of `lite`                              |                      | `["lite_on_nightly"]`   |                                      |

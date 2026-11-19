@@ -26,10 +26,7 @@ keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
 repository = "https://github.com/flexsync-rs/lite"
 
 # include = ["../src"]
-include = ["../src/*"]
-
-[lib]
-path = "../src/lib.rs"
+#include = ["../src/*"]
 
 [lints.rust]
 unexpected_cfgs = { level = "deny"}
