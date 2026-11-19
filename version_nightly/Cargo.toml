@@ -22,6 +22,7 @@ edition = "2021"
 #
 # - x.y.{1, 4, 7...}+LITE and
 # - x.y.{2, 5, 8...}+NIGHTLY
+#
  rust-version = "1.102.0"
 
 readme = "../README.md"
