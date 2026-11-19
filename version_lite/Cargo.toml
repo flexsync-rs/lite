@@ -1,23 +1,28 @@
-# Any differences between this file and neighbor ../*/Cargo.toml files are in
-# leading comment characters, so their char-by-char diffs are always same.
+# Any differences between this file and neighbor ../*/Cargo.toml files are in leading comment
+# characters, so their char-by-char diffs are always same.
+#
+# If there's any text comment on line(s) just before/after any commented out TOML, have a line with
+# an empty comment between them. That allows use of Rewrap for the whole file and it prevents Rewrap
+# from merging/rewrapping such lines together.
+#
+# If you're uncommenting any (commented) line, do leave a leading space (so don't just delete a
+# leading `#`, but replace it with a space).
 [package]
 name = "lite"
 
 #version = "0.1.0+FULL"
+#
  version = "0.1.1+LITE"
+#
 #version = "0.1.2+NIGHTLY"
-
 
 edition = "2021"
 
-# rust-version is set ONLY for
-#\
+# rust-version is set ONLY for these versions of `lite` crate:
+#
 # - x.y.{1, 4, 7...}+LITE and
 # - x.y.{2, 5, 8...}+NIGHTLY
-#
-# versions of `lite` crate itself.
-#
-rust-version = "1.102.0"
+ rust-version = "1.102.0"
 
 readme = "../README.md"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -43,6 +48,7 @@ unknown_lints = { level = "forbid"}
 #
 # But, even if `no-link` would be listed here as a dependency regardless of the feature(s),
 # consumers _would_ still link successfully if `no-link` were not imported in any Rust source file.
+#
  no-link = {version = "0.2.2", optional = true}
 
 [features]
@@ -54,11 +60,13 @@ default_feature = []
 default = ["default_feature"]
 
 # Only for x.y.{1, 4, 7...}+LITE versions of `lite`
-lite_on_nightly = ["dep:no-link"]
+#
+ lite_on_nightly = ["dep:no-link"]
 
 # as per https://docs.rs/about/metadata
 [package.metadata.docs.rs]
 no-default-features = true
 
 # Only for x.y.{1, 4, 7...}+LITE versions of `lite`
-features = ["lite_on_nightly"]
+#
+ features = ["lite_on_nightly"]

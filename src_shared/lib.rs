@@ -3,9 +3,6 @@
 #![allow(unstable_features)]
 #![allow(internal_features)]
 
-// Suppress a warning if we're in a `x.y.z+FULL` or `x.y.z+FULL_ON_NIGHTLY` version, where we
-// intentionally don't have `lite_on_nightly` feature defined/available, so that this feature
-// servers to pin `x.y.z+LITE_ON_NIGHTLY` versions.
 #[cfg(feature = "lite_on_nightly")]
 use no_link as _;
 
@@ -22,7 +19,7 @@ const LITE_ON_NIGHTLY_FEATURE: bool = false;
 const RUST_VERSION_SPECIFICED: bool = {
     // no need to use option_env!(..), because as per
     // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
-    // " if one of these values is not provided in the manifest... set to the empty string"
+    // "if one of these values is not provided in the manifest... set to the empty string"
     let rust_version = env!("CARGO_PKG_RUST_VERSION");
     !rust_version.is_empty()
 };
