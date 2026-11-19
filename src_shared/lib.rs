@@ -14,39 +14,66 @@ const _VERIFY_DEFAULT_FEATURE_IS_DISABLED: () = {
 #[doc(hidden)]
 pub mod validate;
 
-// @TODO macros
-//
-//@TODO in our crate, have: use crate as lite;
-//@TODO for export: use ::lite as lite;
-use crate as lite;
+#[macro_export]
+macro_rules! check_my_crate_manifest {
+    (
+        $( $param:tt ),*
+    ) => {
+        const _: () = {
+            use $crate as lite;
 
-const VERSION_STREAM: lite::validate::LiteCrateVersionStream = {
-    // no need to use option_env!(..), because as per
-    // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
-    // "if one of these values is not provided in the manifest... set to the empty string"
-    let patch = ::core::env!("CARGO_PKG_VERSION_PATCH");
-    lite::validate::parse_version_patch(patch)
-};
+            const VERSION_STREAM: lite::validate::LiteCrateVersionStream = {
+                // no need to use option_env!(..), because as per
+                // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
+                // "if one of these values is not provided in the manifest... set to the empty string"
+                let patch = ::core::env!("CARGO_PKG_VERSION_PATCH");
+                lite::validate::parse_version_patch(patch)
+            };
+            {
+                const CARGO_PKG_VERSION: &::core::primitive::str =
+                    ::core::env!("CARGO_PKG_VERSION");
+                VERSION_STREAM.assert_matches_metadata_part_of_version(CARGO_PKG_VERSION);
+            }
 
-const _VERIFY_LITE_ON_NIGHTLY_FEATURE_ONLY_FOR_LITE_VERSION: () = {
-    #[cfg(feature = "lite_on_nightly")]
-    const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = true;
-    #[cfg(not(feature = "lite_on_nightly"))]
-    const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = false;
-
-    VERSION_STREAM.assert_specifies_feature_lite_on_nightly_exactly_if(LITE_ON_NIGHTLY_FEATURE);
-};
-
-const _VERIFY_ONLY_CHOSEN_VERSIONS_SPECIFY_RUST_VERSION: () = {
-    const RUST_VERSION_SPECIFICED: ::core::primitive::bool = {
-        let rust_version = ::core::env!("CARGO_PKG_RUST_VERSION");
-        !rust_version.is_empty()
+            $crate::check_my_crate_manifest!(@param $( $param ),*);
+        };
     };
+    (@param lite_on_nightly_feature $(, $param:tt )* ) => {{
+        #[cfg(feature = "lite_on_nightly")]
+        const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = true;
+        #[cfg(not(feature = "lite_on_nightly"))]
+        const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = false;
 
-    VERSION_STREAM.assert_specifies_feature_lite_on_nightly_exactly_if(RUST_VERSION_SPECIFICED);
-};
+        VERSION_STREAM.assert_specifies_feature_lite_on_nightly_exactly_if(LITE_ON_NIGHTLY_FEATURE);
 
-const _VERIFY_VERSION_PATCH_MATCHES_VERSION_METADATA: () = {
-    const CARGO_PKG_VERSION: &::core::primitive::str = ::core::env!("CARGO_PKG_VERSION");
-    VERSION_STREAM.assert_matches_metadata_part_of_version(CARGO_PKG_VERSION);
-};
+        $crate::check_my_crate_manifest!(@param $( $param ),*);
+    }};
+    (@param rust_version_only_for_lite_or_nightly $(, $param:tt )* ) => {{
+        let rust_version_specified: ::core::primitive::bool = {
+            let rust_version = ::core::env!("CARGO_PKG_RUST_VERSION");
+            !rust_version.is_empty()
+        };
+
+        VERSION_STREAM.assert_specifies_rust_version_exactly_if(rust_version_specified);
+
+        $crate::check_my_crate_manifest!(@param $( $param ),*);
+    }};
+    (@param) => {};
+}
+
+check_my_crate_manifest!(
+    lite_on_nightly_feature,
+    rust_version_only_for_lite_or_nightly
+);
+// The order doesn't matter
+#[cfg(debug_assertions)]
+check_my_crate_manifest!(
+    rust_version_only_for_lite_or_nightly,
+    lite_on_nightly_feature
+);
+#[cfg(debug_assertions)]
+check_my_crate_manifest!(rust_version_only_for_lite_or_nightly);
+#[cfg(debug_assertions)]
+check_my_crate_manifest!(lite_on_nightly_feature);
+#[cfg(debug_assertions)]
+check_my_crate_manifest!();

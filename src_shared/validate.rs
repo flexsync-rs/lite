@@ -39,18 +39,18 @@ impl LiteCrateVersionStream {
         assert!(self.specifies_feature_lite_on_nightly() == condition);
     }
 
-    pub const fn specifies_rust_verison(&self) -> bool {
+    pub const fn specifies_rust_version(&self) -> bool {
         matches!(self, Self::Lite | Self::Nightly)
     }
-    pub const fn assert_specifies_rust_verison_exactly_if(&self, condition: bool) {
-        if self.specifies_rust_verison() && !condition {
+    pub const fn assert_specifies_rust_version_exactly_if(&self, condition: bool) {
+        if self.specifies_rust_version() && !condition {
             panic!("self.specifies_rust_verison() is true, but condition is false");
         }
-        if !self.specifies_rust_verison() && condition {
+        if !self.specifies_rust_version() && condition {
             panic!("self.specifies_rust_verison() is false, but condition is true");
         }
         // redundant, but redundancy is good
-        assert!(self.specifies_rust_verison() == condition);
+        assert!(self.specifies_rust_version() == condition);
     }
 
     pub const fn assert_matches_metadata_part_of_version(&self, pkg_version: &'static str) {
