@@ -9,7 +9,7 @@ use no_link as _;
 
 const _VERIFY_DEFAULT_FEATURE_IS_DISABLED: () = {
     #[cfg(feature = "default_feature")]
-    compile_error!("Disable default features for `lite` crate. But there's more. Read the docs!");
+    compile_error!("Disable default features for `lite` crate. And there's more. Read the docs!");
 };
 
 #[cfg(feature = "lite_on_nightly")]
@@ -18,13 +18,16 @@ const LITE_ON_NIGHTLY_FEATURE: bool = true;
 const LITE_ON_NIGHTLY_FEATURE: bool = false;
 
 const RUST_VERSION_SPECIFICED: bool = {
+    // no need to use option_env!(..), because as per
+    // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
+    // " if one of these values is not provided in the manifest... set to the empty string"
     let rust_version = env!("CARGO_PKG_RUST_VERSION");
     !rust_version.is_empty()
 };
 
 const VERSION_PATCH: u64 = {
-    let patch = option_env!("CARGO_PKG_VERSION_PATCH");
-    if let Some(patch) = patch {
+    let patch = env!("CARGO_PKG_VERSION_PATCH");
+    if !patch.is_empty() {
         let result = u64::from_str_radix(patch, 10);
         match result {
             Ok(patch) => patch,
