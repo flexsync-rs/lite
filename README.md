@@ -2,14 +2,14 @@
 # lite: lightweight library dev
 
 `lite` crate ([crates.io/crates/lite](https://crates.io/crates/lite/)) helps
-with making alternative _lite_/lightweight versions of Rust _library_ crates, so
-as to speed up local development.
+with making alternative _lite_/lightweight compile time-only versions of Rust
+_library_ crates. Why? To speed up local development.
 
-## nightly and stable Rust
+## stable and nightly Rust
 
 _Activating_ (using) `lite` versions does require `nightly` Rust toolchain.
-However, `full` versions will work with `stable` Rust (if the library compiles
-on `stable`), and with `nightly` Rust, too.
+However, `full` versions will work with both `nightly` and `stable` Rust (if the
+library compiles on `stable`).
 
 ## lite-enabled versions
 
@@ -39,6 +39,10 @@ dependencies from GIT.
 You can only _activate_ `lite` versions of _all_ `lite`-enabled dependencies
 (direct or indirect), or none. No granularity.
 
+### scope: cargo only
+
+Not if you use `rustc` directly, or with some other build system.
+
 ### scope: const values need attention (@TODO)
 
 If a `const` value depends on `lite`-enabled functionality, then the `lite`
@@ -66,7 +70,7 @@ source files). For that we suggest:
   there is 400 versions of crates with a feature called `lite`)
 - to prevent confusion for consumers, trigger
   [`core::compile_error!`](https://doc.rust-lang.org/core/macro.compile_error.html)
-  if `lite_on_nightly` is used outside the `LITE_ON_NIGHTLY` version of your
+  if `lite_on_nightly` is used outside the `LITE` version of your
   crate.
 
 (`lite` crate itself also has a _feature_ `lite_on_nightly`, which is used to
@@ -130,21 +134,21 @@ versions:
 
 - `stable` toolchain acts as a stopper.
 - `lite_on_nightly` feature of `lite` acts as a stopper. It prevents the use of
-  `+FULL_ON_NIGHTLY` versions, and it fixes the library crates to
-  `+LITE_ON_NIGHTLY` versions.
+  `+FULL` versions, and it fixes the library crates to
+  `+LITE` versions.
 
 |                                                             | full functionality   | `lite` development only | full functionality on `nightly` only |
 | ----------------------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
-| (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE_ON_NIGHTLY` | `x.y.2+FULL_ON_NIGHTLY`              |
-| `...`                                                       | `x.y.3+FULL`         | `x.y.4+LITE_ON_NIGHTLY` | `x.y.5+FULL_ON_NIGHTLY`              |
-| `...`                                                       | `x.y.6+FULL`         | `x.y.7+LITE_ON_NIGHTLY` | `x.y.8+FULL_ON_NIGHTLY`              |
+| (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE`            | `x.y.2+FULL`                         |
+| `...`                                                       | `x.y.3+FULL`         | `x.y.4+LITE`            | `x.y.5+FULL`                         |
+| `...`                                                       | `x.y.6+FULL`         | `x.y.7+LITE`            | `x.y.8+FULL`                         |
 | `...`                                                       | `...`                | `...`                   | `...`                                |
 |                                                             |                      |                         |                                      |
 | _full_ functionality on toolchain                           | `stable` & `nightly` |                         | `nightly`                            |
 | default (resolves to, and used by `cargo add`) on toolchain | `stable`             |                         | `nightly`                            |
 |                                                             |                      |                         |                                      |
 | for `test, doc, example, bin`                               | ✓                    |                         | ✓                                    |
-| for `lite`-enabled dev only                                 |                      | ✓                       |                                      |
+| for `lite`-enabled dev only (will _not_ link)               |                      | ✓                       |                                      |
 |                                                             |                      |                         |                                      |
 | newest/highest published version                            |                      |                         | ✓                                    |
 | _yanked_ every 6 weeks                                      |                      | ✓                       | ✓                                    |
@@ -153,7 +157,7 @@ versions:
 | needs manual switch to `x.y.z+FULL`                         |                      |                         | ✓                                    |
 |                                                             |                      |                         |                                      |
 | specifies version of `lite` as                              | `0.2.0+FULL`         | `0.2.0+FULL`            | `0.2.0+FULL`                         |
-| resolves version of `lite` to                               | `0.2.0+FULL`         | `0.2.1+LITE_ON_NIGHTLY` | `0.2.2+FULL_ON_NIGHTLY`              |
+| resolves version of `lite` to                               | `0.2.0+FULL`         | `0.2.1+LITE`            | `0.2.2+FULL`                         |
 |                                                             |                      |                         |                                      |
 | specifies `default-features=false` for `lite`               | ✓                    | ✓                       | ✓                                    |
 | specifies _features_ of `lite`                              |                      | `["lite_on_nightly"]`   |                                      |

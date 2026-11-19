@@ -1,15 +1,23 @@
 [package]
 name = "lite"
-version = "0.1.2+ON-1.102"
+# The meta part must be in ASCII.
+#
+version = "0.1.1+LITE"
 
-#edition = "2024"
 edition = "2021"
-rust-version = "1.102.0"
+# @TODO rust-version is set ONLY for
+#
+# - x.y.{1, 4, 7...}+LITE_ON_NIGHTLY and
+# - x.y.{2, 5, 8...}+FULL_ON_NIGHTLY
+#
+# versions of `lite` crate itself.
+#
+# rust-version = "1.102.0"
 
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 
 authors = ["Peter Lyons Kehl<peter.kehl@gmail.com>"]
-description = "Scaffolding for libraries that have a lightweight compile time-only subset"
+description = "Helping libraries to have lightweight compile time-only versions. That speeds up development."
 
 categories = ["no-std", "no-std::no-alloc", "rust-patterns"]
 keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
@@ -17,15 +25,29 @@ keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
 repository = "https://github.com/flexsync-rs/lite"
 
 [lints.rust]
-unexpected_cfgs = { level = "forbid"}
+unexpected_cfgs = { level = "deny"}
 unknown_lints = { level = "forbid"}
 
 [dependencies]
-
-# `no-link` is enabled here, and imported in src/lib.rs, only for
-# "lite" versions, that is, pre-releases x.0.0-lite.y.z+for-lib-dev.
+# `no-link` is enabled here, and imported in src/lib.rs, only for `+LITE_ON_NIGHTLY` versions, that
+# is, ones with a "lite_on_nightly" feature.
 #
-# Even if `no-link` would be listed here as a dependency for other versions,
-# consumers _would_ still link successfully if `no-link` were not imported in
-# any Rust source file.
-no-link = "0.2.2"
+# But, even if `no-link` would be listed here as a dependency regardless of the feature(s),
+# consumers _would_ still link successfully if `no-link` were not imported in any Rust source file.
+no-link = {version = "0.2.2", optional = true}
+
+[features]
+# "default_feature" exists only so that we detect whether (all the crates that use lite) have
+# specified `default-features=false`, and hopefully they followed README.md.
+default_feature = []
+default = ["default_feature"]
+
+# @TODO Only for versions x.y.1, x.y.4, x.y.7 etc.
+lite_on_nightly = ["dep:no-link"]
+
+# as per https://docs.rs/about/metadata
+[package.metadata.docs.rs]
+no-default-features = true
+# @TODO Only for versions x.y.1, x.y.4, x.y.7 etc.
+#
+#features = ["lite_on_nightly"]
