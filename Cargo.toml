@@ -1,14 +1,14 @@
 [package]
 name = "lite"
-# The meta part must be in ASCII.
+# The meta part must be in ASCII, so lib.rs can handle it.
 #
 version = "0.1.1+LITE"
 
 edition = "2021"
 # @TODO rust-version is set ONLY for
 #
-# - x.y.{1, 4, 7...}+LITE_ON_NIGHTLY and
-# - x.y.{2, 5, 8...}+FULL_ON_NIGHTLY
+# - x.y.{1, 4, 7...}+LITE and
+# - x.y.{2, 5, 8...}+FULL
 #
 # versions of `lite` crate itself.
 #
@@ -29,7 +29,7 @@ unexpected_cfgs = { level = "deny"}
 unknown_lints = { level = "forbid"}
 
 [dependencies]
-# `no-link` is enabled here, and imported in src/lib.rs, only for `+LITE_ON_NIGHTLY` versions, that
+# `no-link` is enabled here, and imported in src/lib.rs, only for `+LITE` versions, that
 # is, ones with a "lite_on_nightly" feature.
 #
 # But, even if `no-link` would be listed here as a dependency regardless of the feature(s),

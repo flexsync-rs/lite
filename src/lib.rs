@@ -46,7 +46,6 @@ const VERSION_PATCH: u64 = {
     }
 };
 
-#[derive(Clone, Copy, PartialEq, Eq)]
 enum LiteCrateVersionStream {
     Full,
     Lite,
