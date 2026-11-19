@@ -1,18 +1,19 @@
 [package]
 name = "lite"
-# The meta part must be in ASCII, so lib.rs can handle it.
-#
+
+# The meta part (after the plus sign) must be in ASCII, so src/lib.rs can handle it.
 version = "0.1.1+LITE"
 
 edition = "2021"
-# @TODO rust-version is set ONLY for
-#
+
+# rust-version is set ONLY for
+#\
 # - x.y.{1, 4, 7...}+LITE and
-# - x.y.{2, 5, 8...}+FULL
+# - x.y.{2, 5, 8...}+NIGHTLY
 #
 # versions of `lite` crate itself.
 #
-# rust-version = "1.102.0"
+rust-version = "1.102.0"
 
 readme = "../README.md"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -25,33 +26,35 @@ keywords = ["lightweight", "lite", "no-std", "no_std", "rust-patterns"]
 
 repository = "https://github.com/flexsync-rs/lite"
 
-# include = ["../src"]
-#include = ["../src/*"]
-
 [lints.rust]
-unexpected_cfgs = { level = "deny"}
+# allow unexpected_cfgs, so that we can have all checks in src/lib.rs instead of build.rs, and we
+# can re-use same src/lib.rs across all three version streams of `lite` crate.
+unexpected_cfgs = { level = "allow"}
 unknown_lints = { level = "forbid"}
 
 [dependencies]
-# `no-link` is enabled here, and imported in src/lib.rs, only for `+LITE` versions, that
-# is, ones with a "lite_on_nightly" feature.
+
+# `no-link` is imported in src/lib.rs only for x.y.{1, 4, 7...}+LITE versions of `lite`, that is,
+# ones with a "lite_on_nightly" feature.
 #
 # But, even if `no-link` would be listed here as a dependency regardless of the feature(s),
 # consumers _would_ still link successfully if `no-link` were not imported in any Rust source file.
 no-link = {version = "0.2.2", optional = true}
 
 [features]
+
 # "default_feature" exists only so that we detect whether (all the crates that use lite) have
 # specified `default-features=false`, and hopefully they followed README.md.
 default_feature = []
+
 default = ["default_feature"]
 
-# @TODO Only for versions x.y.1, x.y.4, x.y.7 etc.
+# Only for x.y.{1, 4, 7...}+LITE versions of `lite`
 lite_on_nightly = ["dep:no-link"]
 
 # as per https://docs.rs/about/metadata
 [package.metadata.docs.rs]
 no-default-features = true
-# @TODO Only for versions x.y.1, x.y.4, x.y.7 etc.
-#
-#features = ["lite_on_nightly"]
+
+# Only for x.y.{1, 4, 7...}+LITE versions of `lite`
+features = ["lite_on_nightly"]

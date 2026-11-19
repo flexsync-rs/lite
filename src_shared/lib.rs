@@ -4,7 +4,6 @@
 // Suppress a warning if we're in a `x.y.z+FULL` or `x.y.z+FULL_ON_NIGHTLY` version, where we
 // intentionally don't have `lite_on_nightly` feature defined/available, so that this feature
 // servers to pin `x.y.z+LITE_ON_NIGHTLY` versions.
-#[allow(unexpected_cfgs)]
 #[cfg(feature = "lite_on_nightly")]
 use no_link as _;
 
@@ -16,19 +15,17 @@ const _VERIFY_DEFAULT_FEATURE_IS_DISABLED: () = {
 };
 
 const LITE_ON_NIGHTLY_FEATURE: bool = {
-    #[allow(unexpected_cfgs)]
     #[cfg(feature = "lite_on_nightly")]
     let value = true;
 
-    #[allow(unexpected_cfgs)]
     #[cfg(not(feature = "lite_on_nightly"))]
     let value = false;
     value
 };
 
 const RUST_VERSION_SPECIFICED: bool = {
-    let rust_version = option_env!("CARGO_PKG_RUST_VERSION");
-    rust_version.is_some()
+    let rust_version = env!("CARGO_PKG_RUST_VERSION");
+    !rust_version.is_empty()
 };
 
 const VERSION_PATCH: u64 = {
@@ -94,6 +91,16 @@ const _VERIFY_LITE_ON_NIGHTLY_FEATURE_ONLY_FOR_LITE_VERSION: () = {
 };
 
 const _VERIFY_ONLY_CHOSEN_VERSIONS_SPECIFY_RUST_VERSION: () = {
+    if RUST_VERSION_SPECIFICED && !VERSION_STREAM.specifies_rust_verison() {
+        panic!(
+            "RUST_VERSION_SPECIFICED is true, but VERSION_STREAM.specifies_rust_verison() is false"
+        )
+    }
+    if !RUST_VERSION_SPECIFICED && VERSION_STREAM.specifies_rust_verison() {
+        panic!(
+            "RUST_VERSION_SPECIFICED is false, but VERSION_STREAM.specifies_rust_verison() is true"
+        )
+    }
     assert!(RUST_VERSION_SPECIFICED == VERSION_STREAM.specifies_rust_verison());
 };
 
