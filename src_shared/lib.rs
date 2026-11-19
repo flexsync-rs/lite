@@ -1,5 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![no_std]
+#![allow(unstable_features)]
+#![allow(internal_features)]
 
 // Suppress a warning if we're in a `x.y.z+FULL` or `x.y.z+FULL_ON_NIGHTLY` version, where we
 // intentionally don't have `lite_on_nightly` feature defined/available, so that this feature

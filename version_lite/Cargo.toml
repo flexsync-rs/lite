@@ -1,8 +1,12 @@
+# Any differences between this file and neighbor ../*/Cargo.toml files are in
+# leading comment characters, so their char-by-char diffs are always same.
 [package]
 name = "lite"
 
-# The meta part (after the plus sign) must be in ASCII, so src/lib.rs can handle it.
-version = "0.1.1+LITE"
+#version = "0.1.0+FULL"
+ version = "0.1.1+LITE"
+#version = "0.1.2+NIGHTLY"
+
 
 edition = "2021"
 
@@ -39,7 +43,7 @@ unknown_lints = { level = "forbid"}
 #
 # But, even if `no-link` would be listed here as a dependency regardless of the feature(s),
 # consumers _would_ still link successfully if `no-link` were not imported in any Rust source file.
-no-link = {version = "0.2.2", optional = true}
+ no-link = {version = "0.2.2", optional = true}
 
 [features]
 

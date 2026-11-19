@@ -1,8 +1,11 @@
+# Any differences between this file and neighbor ../*/Cargo.toml files are in
+# leading comment characters, so their char-by-char diffs are always same.
 [package]
 name = "lite"
 
-# The meta part (after the plus sign) must be in ASCII, so src/lib.rs can handle it.
-version = "0.1.2+NIGHTLY"
+#version = "0.1.0+FULL"
+#version = "0.1.1+LITE"
+ version = "0.1.2+NIGHTLY"
 
 edition = "2021"
 

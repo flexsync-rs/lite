@@ -132,11 +132,6 @@ Any `lite`-enabled Rust library should have three alternating "streams" of
 versions. Or, each release/"logical" version has a triplet of three "physical"
 versions:
 
-- `stable` toolchain acts as a stopper. It prevents majority of developers (on `stable`) from using `+LITE` or `+NIGHTLY` unintentionally.
-- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents resolving/updating _library_ crates to
-  their `+NIGHTLY` versions, and it pins them to
-  `+LITE` versions.
-
 |                                                             | full functionality   | `lite` development only | full functionality on `nightly` only |
 | ----------------------------------------------------------- | -------------------- | ----------------------- | ------------------------------------ |
 | (your or 3rd party) _library_ version                       | `x.y.0+FULL`         | `x.y.1+LITE`            | `x.y.2+NIGHTLY`                      |
@@ -161,6 +156,18 @@ versions:
 |                                                             |                      |                         |                                      |
 | specifies `default-features=false` for `lite`               | ✓                    | ✓                       | ✓                                    |
 | specifies _features_ of `lite`                              |                      | `["lite_on_nightly"]`   |                                      |
+
+- `stable` toolchain acts as a stopper. It prevents majority of developers (on `stable`) from using `+LITE` or `+NIGHTLY` unintentionally.
+- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents resolving/updating _library_ crates to
+  their `+NIGHTLY` versions, and it pins them to
+  `+LITE` versions.
+
+Version metadata suffix (after the plus sign) _is_ optional, and `lite` approach _could_ be implemented even without it. However, the above convention for the metadata suffix helps with:
+
+- identifying the appropriate version; and
+- validation/prevention of mistakes (both on the side of developers of `lite`-enabled libraries, and on the side of consumers).
+
+(It _would_ be clearer to have suffixes `+LITE_ON_NIGHTLY` and `+FULL_ON_NIGHTLY`, but `cargo` refuses underscores and dashes in the metadata and it requires it to be alphanumeric.)
 
 - _ok_ to auto-_update_ Cargo._lock_ to `-STOP`
 - _bad_ to auto-_upgrade_ Cargo._toml_ to `-STOP`
@@ -275,7 +282,7 @@ Dependencies > Tilde
 Requirements](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements)
 to create pre-release "channels/streams".
 
-This limitation applies only if the consumers also want to support the "lite"
+@TODO This limitation applies only if the consumers also want to support the "lite"
 mode/version. Otherwise they can just use the non-pre-release version (one with
 `+bin` metadata suffix).
 
