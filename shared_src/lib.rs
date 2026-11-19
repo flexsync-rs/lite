@@ -31,8 +31,8 @@ macro_rules! internal_check_my_crate_manifest {
     ) => {
         {
             // Branches of this macro _would_ be much easier if version_stream were a constant
-            // instead. However, we make it a variable, and we pass it around, so that
-            // shared_tests/ensure_full_paths_in_macros.rs can compile this without evaluating it.
+            // instead. (And it was so at GIT commit b351e3b1e41dd5634496f25b8a0d4b79be51cfe6).
+            // However, when version_stream is a variable, the branches are more re-usable.
             let version_stream = {
                 // no need to use option_env!(..), because as per
                 // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
@@ -64,8 +64,8 @@ macro_rules! internal_check_my_crate_manifest {
 
     (@param $version_stream:expr, rust_version_only_for_lite_or_nightly $(, $param:tt )* ) => {{
         let rust_version_specified: ::core::primitive::bool = {
-            let rust_version = ::core::env!("CARGO_PKG_RUST_VERSION");
-            !rust_version.is_empty()
+            const CARGO_PKG_RUST_VERSION: &::core::primitive::str = ::core::env!("CARGO_PKG_RUST_VERSION");
+            !CARGO_PKG_RUST_VERSION.is_empty()
         };
 
         $version_stream.assert_specifies_rust_version_exactly_if(rust_version_specified);
