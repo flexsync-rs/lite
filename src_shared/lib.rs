@@ -9,19 +9,13 @@ use no_link as _;
 
 const _VERIFY_DEFAULT_FEATURE_IS_DISABLED: () = {
     #[cfg(feature = "default_feature")]
-    compile_error!(
-        "Disable default features for `lite` crate. But that's not enough. Read the docs!",
-    );
+    compile_error!("Disable default features for `lite` crate. But there's more. Read the docs!");
 };
 
-const LITE_ON_NIGHTLY_FEATURE: bool = {
-    #[cfg(feature = "lite_on_nightly")]
-    let value = true;
-
-    #[cfg(not(feature = "lite_on_nightly"))]
-    let value = false;
-    value
-};
+#[cfg(feature = "lite_on_nightly")]
+const LITE_ON_NIGHTLY_FEATURE: bool = true;
+#[cfg(not(feature = "lite_on_nightly"))]
+const LITE_ON_NIGHTLY_FEATURE: bool = false;
 
 const RUST_VERSION_SPECIFICED: bool = {
     let rust_version = env!("CARGO_PKG_RUST_VERSION");
@@ -39,7 +33,7 @@ const VERSION_PATCH: u64 = {
             }
         }
     } else {
-        panic!("Patch part of `lite` crate version is unknown.");
+        panic!("Patch part of `lite` crate's version is unknown.");
     }
 };
 
@@ -109,6 +103,8 @@ const _VERIFY_VERSION_PATCH_MATCHES_VERSION_METADATA: () = {
         (b"FULL", LiteCrateVersionStream::Full) => {}
         (b"LITE", LiteCrateVersionStream::Lite) => {}
         (b"NIGHTLY", LiteCrateVersionStream::Nightly) => {}
-        (_, _) => panic!("Patch part of `lite` crate version doesn't match the version metadata."),
+        (_, _) => {
+            panic!("Patch part of `lite` crate's version doesn't match the version metadata.")
+        }
     }
 };
