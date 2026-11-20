@@ -19,10 +19,14 @@ use DummyType as str;
 
 const _: () = {
     ::lite::internal_check_my_crate_manifest!(
-        lite_on_nightly_feature,
-        rust_version_only_for_lite_or_nightly
+        specifies_lite_on_nightly_feature,
+        specifies_rust_version_only_for_lite_or_nightly
     );
-    ::lite::internal_check_my_crate_manifest!(lite_on_nightly_feature);
-    ::lite::internal_check_my_crate_manifest!(rust_version_only_for_lite_or_nightly);
+    ::lite::internal_check_my_crate_manifest!(
+        specifies_rust_version_only_for_lite_or_nightly,
+        specifies_lite_on_nightly_feature
+    );
+    ::lite::internal_check_my_crate_manifest!(specifies_lite_on_nightly_feature);
+    ::lite::internal_check_my_crate_manifest!(specifies_rust_version_only_for_lite_or_nightly);
     ::lite::internal_check_my_crate_manifest!();
 };

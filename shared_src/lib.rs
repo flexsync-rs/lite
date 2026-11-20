@@ -3,8 +3,11 @@
 #![allow(unstable_features)]
 #![allow(internal_features)]
 
-#[cfg(feature = "lite_on_nightly")]
-use no_link as _;
+mod use_no_link_if_lite_on_nightly {
+    #![allow(unexpected_cfgs)]
+    #[cfg(feature = "lite_on_nightly")]
+    use no_link as _;
+}
 
 const _VERIFY_DEFAULT_FEATURE_IS_DISABLED: () = {
     #[cfg(feature = "default_feature")]
@@ -51,18 +54,23 @@ macro_rules! internal_check_my_crate_manifest {
         }
     };
 
-    (@param $version_stream:expr, lite_on_nightly_feature $(, $param:tt )* ) => {{
-        #[cfg(feature = "lite_on_nightly")]
-        const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = true;
-        #[cfg(not(feature = "lite_on_nightly"))]
-        const LITE_ON_NIGHTLY_FEATURE: ::core::primitive::bool = false;
+    (@param $version_stream:expr, specifies_lite_on_nightly_feature
 
-        $version_stream.assert_specifies_feature_lite_on_nightly_exactly_if(LITE_ON_NIGHTLY_FEATURE);
+ $(, $param:tt )* ) => {{
+        #![allow(unexpected_cfgs)]
+
+        #[cfg(feature = "lite_on_nightly")]
+        const LITE_ON_NIGHTLY_FEATURE_ENABLED: ::core::primitive::bool = true;
+        #[cfg(not(feature = "lite_on_nightly"))]
+        const LITE_ON_NIGHTLY_FEATURE_ENABLED: ::core::primitive::bool = false;
+
+        $version_stream.assert_specifies_feature_lite_on_nightly_exactly_if(LITE_ON_NIGHTLY_FEATURE_ENABLED);
 
         $crate::internal_check_my_crate_manifest!(@param $version_stream, $( $param ),*);
     }};
 
-    (@param $version_stream:expr, rust_version_only_for_lite_or_nightly $(, $param:tt )* ) => {{
+    (@param $version_stream:expr, specifies_rust_version_only_for_lite_or_nightly
+ $(, $param:tt )* ) => {{
         let rust_version_specified: ::core::primitive::bool = {
             const CARGO_PKG_RUST_VERSION: &::core::primitive::str = ::core::env!("CARGO_PKG_RUST_VERSION");
             !CARGO_PKG_RUST_VERSION.is_empty()
@@ -77,18 +85,18 @@ macro_rules! internal_check_my_crate_manifest {
 }
 
 check_my_crate_manifest!(
-    lite_on_nightly_feature,
-    rust_version_only_for_lite_or_nightly
+    specifies_lite_on_nightly_feature,
+    specifies_rust_version_only_for_lite_or_nightly
 );
 // The order doesn't matter
 #[cfg(debug_assertions)]
 check_my_crate_manifest!(
-    rust_version_only_for_lite_or_nightly,
-    lite_on_nightly_feature
+    specifies_rust_version_only_for_lite_or_nightly,
+    specifies_lite_on_nightly_feature
 );
 #[cfg(debug_assertions)]
-check_my_crate_manifest!(rust_version_only_for_lite_or_nightly);
+check_my_crate_manifest!(specifies_rust_version_only_for_lite_or_nightly);
 #[cfg(debug_assertions)]
-check_my_crate_manifest!(lite_on_nightly_feature);
+check_my_crate_manifest!(specifies_lite_on_nightly_feature);
 #[cfg(debug_assertions)]
 check_my_crate_manifest!();
