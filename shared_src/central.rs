@@ -1,8 +1,3 @@
-#![doc = include_str!("../README.md")]
-#![no_std]
-#![allow(unstable_features)]
-#![allow(internal_features)]
-
 mod use_no_link_if_lite_on_nightly {
     #![allow(unexpected_cfgs)]
     #[cfg(feature = "lite_on_nightly")]
@@ -42,7 +37,7 @@ macro_rules! internal_check_my_crate_manifest {
                 // "if one of these values is not provided in the manifest... set to the empty
                 // string"
                 const CARGO_PKG_VERSION_PATCH: &::core::primitive::str = ::core::env!("CARGO_PKG_VERSION_PATCH");
-                $crate::validate::parse_version_patch(CARGO_PKG_VERSION_PATCH)
+                $crate::central::validate::parse_version_patch(CARGO_PKG_VERSION_PATCH)
             };
             {
                 const CARGO_PKG_VERSION: &::core::primitive::str =

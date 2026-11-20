@@ -1,0 +1,1 @@
+../../shared_src_on_stable/lib.rs

@@ -70,8 +70,7 @@ source files). For that we suggest:
   there is 400 versions of crates with a feature called `lite`)
 - to prevent confusion for consumers, trigger
   [`core::compile_error!`](https://doc.rust-lang.org/core/macro.compile_error.html)
-  if `lite_on_nightly` is used outside the `LITE` version of your
-  crate.
+  if `lite_on_nightly` is used outside the `LITE` version of your crate.
 
 (`lite` crate itself also has a _feature_ `lite_on_nightly`, which is used to
 pin `lite` versions of any `lite`-enabled crates.)
@@ -157,17 +156,23 @@ versions:
 | specifies `default-features=false` for `lite`               | ✓                    | ✓                       | ✓                                    |
 | specifies _features_ of `lite`                              |                      | `["lite_on_nightly"]`   |                                      |
 
-- `stable` toolchain acts as a stopper. It prevents majority of developers (on `stable`) from using `+LITE` or `+NIGHTLY` unintentionally.
-- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents resolving/updating _library_ crates to
-  their `+NIGHTLY` versions, and it pins them to
-  `+LITE` versions.
+- `stable` toolchain acts as a stopper. It prevents majority of developers (on
+  `stable`) from using `+LITE` or `+NIGHTLY` unintentionally.
+- `lite_on_nightly` feature of `lite` acts as a stopper. It prevents
+  resolving/updating _library_ crates to their `+NIGHTLY` versions, and it pins
+  them to `+LITE` versions.
 
-Version metadata suffix (after the plus sign) _is_ optional, and `lite` approach _could_ be implemented even without it. However, the above convention for the metadata suffix helps with:
+Version metadata suffix (after the plus sign) _is_ optional, and `lite` approach
+_could_ be implemented even without it. However, the above convention for the
+metadata suffix helps with:
 
 - identifying the appropriate version; and
-- validation/prevention of mistakes (both on the side of developers of `lite`-enabled libraries, and on the side of consumers).
+- validation/prevention of mistakes (both on the side of developers of
+  `lite`-enabled libraries, and on the side of consumers).
 
-(It _would_ be clearer to have suffixes `+LITE_ON_NIGHTLY` and `+FULL_ON_NIGHTLY`, but `cargo` refuses underscores and dashes in the metadata and it requires it to be alphanumeric.)
+(It _would_ be clearer to have suffixes `+LITE_ON_NIGHTLY` and
+`+FULL_ON_NIGHTLY`, but `cargo` refuses underscores and dashes in the metadata
+and it requires it to be alphanumeric.)
 
 - _ok_ to auto-_update_ Cargo._lock_ to `-STOP`
 - _bad_ to auto-_upgrade_ Cargo._toml_ to `-STOP`
@@ -282,9 +287,9 @@ Dependencies > Tilde
 Requirements](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#tilde-requirements)
 to create pre-release "channels/streams".
 
-@TODO This limitation applies only if the consumers also want to support the "lite"
-mode/version. Otherwise they can just use the non-pre-release version (one with
-`+bin` metadata suffix).
+@TODO This limitation applies only if the consumers also want to support the
+"lite" mode/version. Otherwise they can just use the non-pre-release version
+(one with `+bin` metadata suffix).
 
 ## Preventing lite versions from matching the +bin versions
 
@@ -324,6 +329,14 @@ _-lib-lite._ _CAN'T_ auto-update to/match (the next, or any newer) *+for-bin.
 @TODO
 
 0.0.1-for-bin <- linked with exact ="= version" <--- 1.1.4+for-bin
+
+## Internal/GIT: Symlinks
+
+This repository uses symlins. You need an OS and a filesystem that supports
+them, if you want to use it locally (which we do _not_ recommend anyway).
+
+That does _not_ affect `crates.io` and any consumers that depend on `lite` from
+`crates.io`.
 
 ## See also
 
