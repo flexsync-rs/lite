@@ -38,8 +38,8 @@ macro_rules! internal_check_my_crate_manifest {
                 // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
                 // "if one of these values is not provided in the manifest... set to the empty
                 // string"
-                let patch = ::core::env!("CARGO_PKG_VERSION_PATCH");
-                $crate::validate::parse_version_patch(patch)
+                const CARGO_PKG_VERSION_PATCH: &::core::primitive::str = ::core::env!("CARGO_PKG_VERSION_PATCH");
+                $crate::validate::parse_version_patch(CARGO_PKG_VERSION_PATCH)
             };
             {
                 const CARGO_PKG_VERSION: &::core::primitive::str =

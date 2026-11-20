@@ -1,12 +1,21 @@
 #![allow(unused_imports)]
 
-#[allow(dead_code)]
-struct Dummy;
+mod dummy_mod {}
 
-use Dummy as bool;
-use Dummy as core;
-use Dummy as lite;
-use Dummy as std;
+#[allow(unused_macros)]
+macro_rules! dummy_macro {
+    () => {};
+}
+
+#[allow(dead_code)]
+struct DummyType;
+
+use dummy_macro as env;
+use dummy_mod as core;
+use dummy_mod as lite;
+use dummy_mod as std;
+use DummyType as bool;
+use DummyType as str;
 
 const _: () = {
     ::lite::internal_check_my_crate_manifest!(
