@@ -18,7 +18,18 @@
   cargo +nightly test --no-default-features
   ```
 
-## publishing to crates.io
+## publishing and yanking
+
+_Never_ allow a `+LITE` version to be the highest. That would break full
+functionality for `nightly` users. Unless they choose
+`features=["lite_on_nightly"]`, they expect full functionality (from a
+`+NIGHTLY` version). But if a `+LITE` version is the highest, their crates
+resolve to it automatically _even_ without `features=["lite_on_nightly"]`!
+
+Aim for `+NIGHTLY` to be the _highest_ published version. Otherwise it _is_ OK
+for `+FULL` to be the highest.
+
+### publishing to crates.io
 
 Publish in this order:
 
@@ -28,15 +39,6 @@ Publish in this order:
    get full functionality at any time
 3. `+LITE` - but only _after_ a respective `+NIGHTLY` has been published.
 
-_Never_ allow a `+LITE` version to be the highest. That would break full
-functionality for `nightly` users: If they don't choose
-`features=["lite_on_nightly"]`, they expect full functionality (from a
-`+NIGHTLY` version). But if a `+LITE` version is the highest, their crates
-resolve to it automatically _even_ without `features=["lite_on_nightly"]`!
-
-Aim for `+NIGHTLY` to be the _highest_ published version. Otherwise it _is_ OK
-for `+FULL` to be highest.
-
 Use
 
 ```bash
@@ -45,3 +47,5 @@ cargo publish --no-verify
 
 because we intentionally make the build fail unless all consumers set
 `default-features=false`.
+
+### yanking

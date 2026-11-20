@@ -1,5 +1,12 @@
+#![no_std]
+#![no_implicit_prelude]
 #![allow(unused_imports)]
 
+// even with no implicit prelude, there are some macros and basic types:
+// - https://doc.rust-lang.org/reference/names/preludes.html#r-names.preludes.no_implicit_prelude.implicitly-imported-macros
+// - https://doc.rust-lang.org/reference/names/preludes.html#language-prelude
+//
+// Hence we define ours, so as to test that the macros always use full paths.
 mod dummy_mod {}
 
 #[allow(unused_macros)]
