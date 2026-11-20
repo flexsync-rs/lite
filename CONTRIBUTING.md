@@ -7,7 +7,7 @@
   cd version_full/
   cargo +stable test --no-default-features
   ```
-- `+LITE` (it _can't_ link/run/test)
+- `+LITE` (it _can't_ link/run/test - so we run `cargo check` only)
   ```bash
   cd version_lite/
   cargo +nightly check --tests --no-default-features --features lite_on_nightly
@@ -37,5 +37,11 @@ resolve to it automatically _even_ without `features=["lite_on_nightly"]`!
 Aim for `+NIGHTLY` to be the _highest_ published version. Otherwise it _is_ OK
 for `+FULL` to be highest.
 
-Use `cargo publish --no-verify`, because we intentionally make the build fail
-unless all consumers set `default-features=false`.
+Use
+
+```bash
+cargo publish --no-verify
+```
+
+because we intentionally make the build fail unless all consumers set
+`default-features=false`.

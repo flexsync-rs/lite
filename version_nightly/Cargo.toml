@@ -64,23 +64,6 @@ default = ["default_feature"]
 #
 #lite_on_nightly = ["dep:no-link"]
 
-# `require_nightly` has to be enabled EXACTLY FOR (that is: FOR, AND ONLY FOR) these versions of
-# `lite`:
-#
-# - x.y.{1, 4, 7...}+LITE and
-# - x.y.{2, 5, 8...}+NIGHTLY
-#
-# `lite`-enabled crates do _not_ need to have/define/offer such a feature in order to work with
-# `lite` crate. EXACTLY IF (that is: IF, AND ONLY IF) they require `nightly`, they need to AND have
-# to enable this feature on `lite` crate.
-#
-# (This feature _is_ checked against the version metadata. But it's _not_ deduced/calculated from
-# the version metadata, because then we couldn't use it for conditional compliation to dummy use
-# `nightly` in lib.rs. There it serves to INTETIONALLY make OLD `+LITE` and `+NIGHTLY` versions of
-# `lite` crate fail on `stable` Rust, if such old `+LITE` or `+NIGHTLY` versions of `lite` crate
-# were accidentally left unyanked long enough so that their required Rust version became `stable`.)
-require_nightly = []
-
 # as per https://docs.rs/about/metadata
 [package.metadata.docs.rs]
 no-default-features = true
