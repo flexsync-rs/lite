@@ -24,16 +24,14 @@ use dummy_mod as std;
 use DummyType as bool;
 use DummyType as str;
 
-const _: () = {
-    ::lite::internal_check_my_crate_manifest!(
-        specifies_lite_on_nightly_feature,
-        specifies_rust_version_only_for_lite_or_nightly
-    );
-    ::lite::internal_check_my_crate_manifest!(
-        specifies_rust_version_only_for_lite_or_nightly,
-        specifies_lite_on_nightly_feature
-    );
-    ::lite::internal_check_my_crate_manifest!(specifies_lite_on_nightly_feature);
-    ::lite::internal_check_my_crate_manifest!(specifies_rust_version_only_for_lite_or_nightly);
-    ::lite::internal_check_my_crate_manifest!();
-};
+::lite::check_my_crate_manifest!(
+    specifies_lite_on_nightly_feature,
+    specifies_rust_version_only_for_lite_or_nightly
+);
+::lite::check_my_crate_manifest!(
+    specifies_rust_version_only_for_lite_or_nightly,
+    specifies_lite_on_nightly_feature
+);
+::lite::check_my_crate_manifest!(specifies_lite_on_nightly_feature);
+::lite::check_my_crate_manifest!(specifies_rust_version_only_for_lite_or_nightly);
+::lite::check_my_crate_manifest!();
